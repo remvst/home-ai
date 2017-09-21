@@ -9,4 +9,4 @@ class TextBuilder(object):
         self.text_plugins.append(text_plugin)
 
     def generate(self):
-        return '. '.join(plugin.generate() for plugin in self.text_plugins)
+        return '.\n'.join(plugin.generate() for plugin in self.text_plugins)
