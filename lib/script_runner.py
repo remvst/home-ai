@@ -1,11 +1,14 @@
 from lib.handler import Handler
+from output.stdout import Stdout
+
 
 class ScriptRunner(Handler):
 
-    def __init__(self, script):
+    def __init__(self, script, output=Stdout()):
         super(ScriptRunner, self).__init__()
 
         self.script = script
+        self.output = output
 
     def run(self):
-        print(self.script.generate())
+        self.output.output(self.script.generate())
