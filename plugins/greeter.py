@@ -8,4 +8,4 @@ class Greeter(TextPlugin):
         self.name = name
 
     def generate(self):
-        return 'good morning {}'.format(self.name)
+        return 'welcome home {}'.format(self.name)
