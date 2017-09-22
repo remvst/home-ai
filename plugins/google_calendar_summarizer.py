@@ -21,6 +21,12 @@ def get_credentials(client_secrets_file, application_name):
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
 
+    try:
+        import argparse
+        flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+    except ImportError:
+        flags = None
+
     credential_path = os.path.join(credential_dir, 'home-ai-google-calendar.json')
 
     store = Storage(credential_path)
@@ -28,7 +34,7 @@ def get_credentials(client_secrets_file, application_name):
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(client_secrets_file, SCOPES)
         flow.user_agent = application_name
-        credentials = tools.run_flow(flow, store)
+        credentials = tools.run_flow(flow, store, flags)
 
     return credentials
 
