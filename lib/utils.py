@@ -1,7 +1,6 @@
 import os
 import subprocess
 from gtts import gTTS
-from playsound import playsound
 
 def is_user_in_network(mac_address, timeout=5000):
     arp_scan = subprocess.check_output([
@@ -21,6 +20,7 @@ def say(text):
 
     tts = gTTS(text=text, lang='en')
     tts.save(file_path)
-    playsound(file_path)
+
+    subprocess.check_call(['mpg123', file_path])
 
     os.remove(file_path)
