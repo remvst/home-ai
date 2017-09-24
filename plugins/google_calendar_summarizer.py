@@ -72,9 +72,9 @@ class GoogleCalendarSummarizer(TextPlugin):
             return 'Error getting Google Calendar events'
 
         if len(events) == 0:
-            return 'you have no events scheduled for today'
+            return 'You have no events scheduled for today'
 
-        lines = ['you have {} event{} scheduled today'.format(len(events), 's' if len(events) > 1 else '')]
+        lines = ['You have {} event{} scheduled today'.format(len(events), 's' if len(events) > 1 else '')]
 
         for event in events:
             event_name = event['summary']
