@@ -29,7 +29,7 @@ class WeatherAnnouncer(TextPlugin):
             weather = self.fetch_weather()
             next_12_hours_data = weather['list'][:4] # chunks of 3 hours
         except:
-            return 'error fetching weather'
+            return 'Error fetching weather'
 
         min_temp = int(round(min(to_celsius(chunk['main']['temp_min']) for chunk in next_12_hours_data)))
         max_temp = int(round(max(to_celsius(chunk['main']['temp_max']) for chunk in next_12_hours_data)))
@@ -37,6 +37,6 @@ class WeatherAnnouncer(TextPlugin):
         weather_types = list(set([chunk['weather'][0]['description'] for chunk in next_12_hours_data]))
 
         return '. '.join([
-            'weather should be {}'.format(', '.join(weather_types)),
-            'temperatures should be between {} and {} degrees celsius'.format(min_temp, max_temp)
+            'Weather should be {}'.format(', '.join(weather_types)),
+            'Temperatures should be between {} and {} degrees celsius'.format(min_temp, max_temp)
         ])

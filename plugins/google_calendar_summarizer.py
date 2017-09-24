@@ -2,6 +2,7 @@ import httplib2
 import os
 from datetime import date, datetime, time, timedelta
 from dateutil import parser
+import json
 
 from apiclient import discovery
 from oauth2client import client
@@ -77,10 +78,14 @@ class GoogleCalendarSummarizer(TextPlugin):
 
         for event in events:
             event_name = event['summary']
-            event_time = parser.parse(event['start']['dateTime'])
-            event_time_format = event_time.strftime('%I:%M%p')
 
-            line = '{}, at {}'.format(event_name, event_time_format)
+            if 'dateTime' in event['start']:
+                event_time = parser.parse(event['start']['dateTime'])
+                event_time_format = 'at {}'.format(event_time.strftime('%I:%M%p'))
+            else:
+                event_time_format = 'the whole day'
+
+            line = '{}, {}'.format(event_name, event_time_format)
             lines.append(line)
 
         return '. '.join(lines)

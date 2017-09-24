@@ -6,4 +6,4 @@ class TimeAnnouncer(TextPlugin):
 
     def generate(self):
         formatted_time = datetime.now().strftime('%I:%M%p')
-        return 'it is {}'.format(formatted_time)
+        return 'It is {}'.format(formatted_time)
