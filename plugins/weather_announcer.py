@@ -37,6 +37,7 @@ class WeatherAnnouncer(TextPlugin):
         weather_types = list(set([chunk['weather'][0]['description'] for chunk in next_12_hours_data]))
 
         return '. '.join([
+            'Here is the forecast for the day:'
             'Weather should be {}'.format(', '.join(weather_types)),
             'Temperatures should be between {} and {} degrees celsius'.format(min_temp, max_temp)
         ])

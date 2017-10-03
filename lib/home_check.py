@@ -21,7 +21,7 @@ class HomeCheck(object):
     def check(self):
         print 'Scanning network...'
         is_home = any(is_user_in_network(addr) for addr in self.mac_addresses)
-        print 'Scanned'
+        print 'Scanned (is_home={})'.format(is_home)
 
         if is_home:
             self.last_time_home = datetime.now()

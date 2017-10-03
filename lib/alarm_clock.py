@@ -1,8 +1,6 @@
 from collections import deque
 from datetime import date, datetime, time
 
-from lib.utils import is_user_in_network
-
 
 class AlarmClockSetting(object):
 
