@@ -4,10 +4,12 @@ from datetime import date, datetime, time, timedelta
 from dateutil import parser
 import json
 
+import pytz
 from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+from tzlocal import get_localzone
 
 from lib.text_plugin import TextPlugin
 
@@ -52,13 +54,15 @@ class GoogleCalendarSummarizer(TextPlugin):
         today = date.today()
         tomorrow = today + timedelta(days=1)
 
-        today_start = datetime.combine(today, time())
-        tomorrow_start = datetime.combine(tomorrow, time())
+        local = get_localzone()
+
+        today_start = local.localize(datetime.combine(today, time()))
+        tomorrow_start = local.localize(datetime.combine(tomorrow, time()))
 
         events_result = service.events().list(
             calendarId='primary',
-            timeMin=today_start.isoformat() + 'Z',
-            timeMax=tomorrow_start.isoformat() + 'Z',
+            timeMin=today_start.isoformat(),
+            timeMax=tomorrow_start.isoformat(),
             singleEvents=True,
             orderBy='startTime'
         ).execute()
@@ -68,8 +72,8 @@ class GoogleCalendarSummarizer(TextPlugin):
     def generate(self):
         try:
             events = self.fetch_events()
-        except:
-            return 'Error getting Google Calendar events'
+        except Exception as e:
+            return 'Error getting Google Calendar events: {}'.format(e.message)
 
         if len(events) == 0:
             return 'You have no events scheduled for today'
