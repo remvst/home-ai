@@ -18,6 +18,6 @@ class Speech(Output):
         tts = gTTS(text=string, lang='en')
         tts.save(file_path)
 
-        subprocess.check_call(['mpg123', file_path])
+        subprocess.check_call(['mpg123', '--delay', '2', file_path])
 
         os.remove(file_path)
