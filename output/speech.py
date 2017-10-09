@@ -1,7 +1,7 @@
 import os
-import subprocess
 from gtts import gTTS
 
+from lib.sound import play_mp3
 from output import Output
 
 
@@ -25,6 +25,6 @@ class Speech(Output):
         tts = gTTS(text=string, lang='en')
         tts.save(file_path)
 
-        subprocess.check_call(['mpg123', '--delay', '2', file_path])
+        play_mp3(file_path)
 
         os.remove(file_path)
