@@ -13,9 +13,12 @@ class KikBot(Output):
         self.recipient_username = recipient_username
 
     def output(self, string):
-        self.kik.send_messages([
-            TextMessage(
-                to=self.recipient_username,
-                body=string
-            )
-        ])
+        try:
+            self.kik.send_messages([
+                TextMessage(
+                    to=self.recipient_username,
+                    body=string
+                )
+            ])
+        except Exception as e:
+            print e
