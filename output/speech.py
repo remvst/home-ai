@@ -7,7 +7,14 @@ from output import Output
 
 class Speech(Output):
 
+    def __init__(self, pre_speech=None):
+        super(Speech, self).__init__()
+        self.pre_speech = pre_speech
+
     def output(self, string):
+        if self.pre_speech is not None:
+            self.pre_speech()
+
         file_path='speech.mp3'
 
         try:
