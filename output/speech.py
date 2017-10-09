@@ -12,9 +12,6 @@ class Speech(Output):
         self.pre_speech = pre_speech
 
     def output(self, string):
-        if self.pre_speech is not None:
-            self.pre_speech()
-
         file_path='speech.mp3'
 
         try:
@@ -24,6 +21,9 @@ class Speech(Output):
 
         tts = gTTS(text=string, lang='en')
         tts.save(file_path)
+
+        if self.pre_speech is not None:
+            self.pre_speech()
 
         play_mp3(file_path)
 
