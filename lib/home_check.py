@@ -13,7 +13,7 @@ class HomeCheck(object):
         self.away_threshold = away_threshold
 
         self.is_home = False
-        self.last_time_home = datetime.now()
+        self.last_time_in_network = datetime.now()
 
         self.came_home_handler = None
         self.left_home_handler = None
@@ -24,15 +24,30 @@ class HomeCheck(object):
         print 'Scanned (is_home={})'.format(is_home)
 
         if is_home:
-            self.last_time_home = datetime.now()
-            if not self.is_home:
-                self.is_home = True
-                if self.came_home_handler is not None:
-                    self.came_home_handler.run()
-            return
+            self.last_time_in_network = datetime.now()
+            self.maybe_welcome()
+        else:
+            self.maybe_goodbye()
 
-        away_time = datetime.now() - self.last_time_home
-        if away_time > self.away_threshold:
-            self.is_home = False
-            if self.left_home_handler is not None:
-                self.left_home_handler.run()
+    def maybe_welcome(self):
+        if self.is_home:
+            return # Already home
+
+        self.is_home = True
+
+        if self.came_home_handler is not None:
+            self.came_home_handler.run()
+
+    def naybe_goodbye(self):
+        if not self.is_home:
+            return # Already considered gone
+
+        away_time = datetime.now() - self.last_time_in_network
+        if away_time < self.away_threshold:
+            return # Not away for long enough
+
+        # Okay now he's gone for sure
+        self.is_home = False
+
+        if self.left_home_handler is not None:
+            self.left_home_handler.run()
