@@ -10,11 +10,13 @@ from output import Output
 
 class KikBot(Output):
 
-    def __init__(self, bot_username, bot_api_key, recipient_username):
+    def __init__(self, bot_username, bot_api_key, recipient_username, message_handler=None, default_keyboard=None):
         super(KikBot, self).__init__()
 
         self.kik = KikApi(bot_username, bot_api_key)
         self.recipient_username = recipient_username
+        self.message_handler = message_handler
+        self.default_keyboard = default_keyboard
 
         self.config = Configuration(webhook=None)
 
@@ -25,7 +27,8 @@ class KikBot(Output):
             self.kik.send_messages([
                 TextMessage(
                     to=self.recipient_username,
-                    body=string
+                    body=string,
+                    keyboards=[self.default_keyboard]
                 )
             ])
         except Exception as e:
@@ -51,5 +54,10 @@ class KikBot(Output):
 
         json_body = json.loads(raw_body)
         messages = messages_from_json(json_body['messages'])
+
+        # Send the messages to the outside handler
+        if self.message_handler is not None:
+            for message in messages:
+                self.message_handler(message)
 
         return '', 200

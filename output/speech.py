@@ -1,5 +1,6 @@
 import os
 from gtts import gTTS
+from uuid import uuid4
 
 from lib.sound import play_mp3
 from output import Output
@@ -12,7 +13,8 @@ class Speech(Output):
         self.pre_speech = pre_speech
 
     def output(self, string):
-        file_path='speech.mp3'
+        # Random file just so there are no collisions between threads
+        file_path = '/tmp/home-ai-speech-{}.mp3'.format(str(uuid4()))
 
         try:
             os.remove(file_path)
