@@ -20,7 +20,7 @@ def get_ngrok_url():
 
     json_response = json.loads(content)
 
-    return json_response['tunnels'][0]['public_url']:
+    return json_response['tunnels'][0]['public_url']
 
 def run_ngrok(port):
     subprocess.check_output(['./ngrok', 'http', str(port)])
