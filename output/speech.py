@@ -1,6 +1,7 @@
 import os
 import threading
 from gtts import gTTS
+from time import sleep
 from uuid import uuid4
 
 from lib.sound import play_mp3
@@ -30,9 +31,11 @@ class Speech(Output):
                 self.play_string(self.queue.pop(0))
 
             self.lock.release()
+            
+            sleep(0.5)
 
     def play_string(self, string):
-        file_path = '/tmp/speech.mp3'
+        file_path = 'speech.mp3'
 
         try:
             os.remove(file_path)
