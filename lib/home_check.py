@@ -36,7 +36,7 @@ class HomeCheck(object):
         if self.came_home_handler is not None:
             self.came_home_handler.run()
 
-    def naybe_goodbye(self):
+    def maybe_goodbye(self):
         if not self.is_home:
             return # Already considered gone
 
