@@ -1,4 +1,5 @@
 import os
+import threading
 from gtts import gTTS
 from uuid import uuid4
 
@@ -11,10 +12,27 @@ class Speech(Output):
     def __init__(self, pre_speech=None):
         super(Speech, self).__init__()
         self.pre_speech = pre_speech
+        self.queue = []
+
+        self.lock = threading.Lock()
 
     def output(self, string):
-        # Random file just so there are no collisions between threads
-        file_path = '/tmp/home-ai-speech-{}.mp3'.format(str(uuid4()))
+        self.lock.acquire()
+        self.queue.append(string)
+        self.lock.release()
+
+    def playback_worker(self):
+        while True:
+            self.lock.acquire()
+
+            if len(self.queue) > 0:
+                # Play first item in the list
+                self.play_string(self.queue.pop(0))
+
+            self.lock.release()
+
+    def play_string(self, string):
+        file_path = '/tmp/speech.mp3'
 
         try:
             os.remove(file_path)
