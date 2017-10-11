@@ -1,4 +1,5 @@
 import json
+import logging
 
 from flask import Flask, request
 from kik import KikApi, Configuration
@@ -32,7 +33,7 @@ class KikBot(Output):
                 )
             ])
         except Exception as e:
-            print e
+            logging.exception(e)
 
     def update_config(self, webhook):
         self.config.webhook = webhook

@@ -36,7 +36,7 @@ class NewsSummarizer(TextPlugin):
                 articles = self.fetch_articles(source)
                 lines.extend([article['title'] for article in articles])
             except Exception as ex:
-                print ex
+                logging.exception(ex)
                 return 'Error getting {} news headlines'.format(source)
 
         return '. '.join(lines)
