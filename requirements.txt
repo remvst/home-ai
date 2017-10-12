@@ -9,3 +9,7 @@ tzlocal==1.4
 Flask==0.12.2
 Werkzeug==0.12.2
 psutil==5.3.1
+Pygame==1.9.3
+scikit-image==0.13.1
+Pillow==2.2.1
+numpy==1.13.3
