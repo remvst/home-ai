@@ -17,6 +17,17 @@ tar -zxvf ngrok-stable-linux-arm.tgz
 rm ngrok-stable-linux-arm.tgz
 ```
 
+PyGame dependencies:
+```sh
+sudo apt-get install libsdl-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
+sudo apt-get install libsmpeg-dev libportmidi-dev libavformat-dev libswscale-dev
+```
+
+OpenCV dependencies (not sure if necessary):
+```sh
+sudo apt-get install libopencv-dev python-opencv
+```
+
 Install Python Dependencies:
 ```sh
 pip install -r requirements.txt
