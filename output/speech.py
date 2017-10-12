@@ -26,12 +26,13 @@ class Speech(Output):
         while True:
             self.lock.acquire()
 
-            if len(self.queue) > 0:
-                # Play first item in the list
-                self.play_string(self.queue.pop(0))
+            try:
+                # Play first item in the queue
+                if len(self.queue) > 0:
+                    self.play_string(self.queue.pop(0))
+            finally:
+                self.lock.release()
 
-            self.lock.release()
-            
             sleep(0.5)
 
     def play_string(self, string):

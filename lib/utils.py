@@ -1,6 +1,10 @@
 import httplib2
 import json
+import logging
+import os
+import psutil
 import subprocess
+import sys
 
 def is_user_in_network(mac_address, timeout=5000):
     arp_scan = subprocess.check_output([
@@ -24,3 +28,16 @@ def get_ngrok_url():
 
 def run_ngrok(port):
     subprocess.check_output(['./ngrok', 'http', str(port)])
+
+def restart_process():
+    logging.info('Restarting process')
+
+    try:
+        p = psutil.Process(os.getpid())
+        for handler in p.get_open_files() + p.connections():
+            os.close(handler.fd)
+    except Exception as e:
+        logging.error(e)
+
+    python = sys.executable
+    os.execl(python, python, *sys.argv)

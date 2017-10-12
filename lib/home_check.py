@@ -12,7 +12,7 @@ class HomeCheck(object):
         self.mac_addresses = mac_addresses
         self.away_threshold = away_threshold
 
-        self.is_home = False
+        self.is_home = None
         self.last_time_in_network = datetime.now()
 
         self.came_home_handler = None
@@ -20,6 +20,10 @@ class HomeCheck(object):
 
     def check(self):
         is_home = any(is_user_in_network(addr) for addr in self.mac_addresses)
+
+        if self.is_home is None:
+            self.is_home = is_home
+            return
 
         if is_home:
             self.last_time_in_network = datetime.now()
