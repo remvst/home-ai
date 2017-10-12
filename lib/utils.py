@@ -50,7 +50,7 @@ def restart_process():
 
 CAMERA_INITIALIZED = False
 
-def take_picture(destination, skip=1):
+def take_picture(destination, skip=1, resolution=(1280, 720)):
     global CAMERA_INITIALIZED
 
     if not CAMERA_INITIALIZED:
@@ -61,7 +61,7 @@ def take_picture(destination, skip=1):
     if len(cameras) == 0:
         raise Exception('No cameras detected, unable to take picture')
 
-    camera = pygame.camera.Camera(cameras[0])
+    camera = pygame.camera.Camera(cameras[0], resolution)
     camera.start()
 
     # Skip frames
