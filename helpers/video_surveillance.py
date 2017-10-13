@@ -46,6 +46,8 @@ class VideoSurveillance(object):
         hog = cv2.HOGDescriptor()
         hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
+        print 'done parsing humans'
+
         humans, weights = hog.detectMultiScale(grayscale, winStride=(8, 8), padding=(32, 32), scale=1.05)
 
         print 'done with humans'
