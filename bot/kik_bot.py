@@ -1,15 +1,15 @@
 import logging
 
 from kik import KikApi, Configuration
-from kik.messages import PictureMessage, TextMessage, messages_from_json
+from kik.messages import PictureMessage, SuggestedResponseKeyboard, TextMessage, TextResponse, messages_from_json
 
 import config
 from scripts.good_morning import generate_string as good_morning
 from utils.camera import take_picture
 from utils.ngrok import get_ngrok_url
 from utils.process import restart_process
+from web.app import app, path_to_static_file
 from workers.speech import add_to_queue
-from workers.web_server import path_to_static_file
 
 class KikBot(object):
 
@@ -57,42 +57,42 @@ class KikBot(object):
         if 'alarm' in body:
             string = good_morning()
             add_to_queue(string)
-            send([TextMessage(body='Playing alarm', to=message.from_user)])
+            self.send([TextMessage(body='Playing alarm', to=message.from_user)])
             return
 
         if 'tunnel' in body:
-            send([TextMessage(body=get_ngrok_url(), to=message.from_user)])
+            self.send([TextMessage(body=get_ngrok_url(), to=message.from_user)])
             return
 
         if 'kill' in body:
-            send([TextMessage(body='Terminating process', to=message.from_user)])
+            self.send([TextMessage(body='Terminating process', to=message.from_user)])
             exit(1)
             return
 
         if 'restart' in body:
-            send([TextMessage(body='Restarting process', to=message.from_user)])
+            self.send([TextMessage(body='Restarting process', to=message.from_user)])
             restart_process()
             return
 
         if 'picture' in body:
-            relative_path = '{}/pictures/my-pic.png'.format(bot_output.static_folder)
+            relative_path = '{}/pictures/my-pic.png'.format(app.static_folder)
             take_picture(relative_path)
 
             url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(relative_path))
-            send([PictureMessage(pic_url=url, to=message.from_user)])
+            self.send([PictureMessage(pic_url=url, to=message.from_user)])
             return
 
         if 'surveillance' in body:
             picture_path, enhanced_path, detected = visual_home_check.survey()
             url = '{}/{}'.format(get_ngrok_url(), bot_output.path_to_static_file(enhanced_path))
-            bot_output.output_picture(url)
+            self.send([PictureMessage(pic_url=url, to=message.from_user)])
 
             os.remove(picture_path)
             os.remove(enhanced_path)
             return
 
-        speech_output.output(body)
-        bot_output.output('Playing on speaker')
+        add_to_queue(body)
+        self.send([TextMessage(body='Playing on speaker', to=message.from_user)])
 
 
 bot = KikBot()

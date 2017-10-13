@@ -8,11 +8,7 @@ from werkzeug.serving import run_simple
 
 import config
 from bot.kik_bot import bot
-
-
-static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), '../static')
-
-app = Flask(__name__, static_folder='/static')
+from web.app import app
 
 def worker():
     run_simple('localhost', config.KIK_BOT_PORT, app)
@@ -31,7 +27,3 @@ def incoming_messages():
     bot.handle_messages(messages)
 
     return '', 200
-
-def path_to_static_file(relative_path):
-    path_from_static = os.path.relpath(relative_path, __dirname)
-    return 'static/{}'.format(path_from_static)
