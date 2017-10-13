@@ -1,5 +1,4 @@
 *.pyc
-*.mp3
 config.py
 oauth_secret.json
 oauth_secret2.json

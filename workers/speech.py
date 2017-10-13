@@ -38,7 +38,7 @@ def play_string(string):
     text_to_speech(string=string, file_path=file_path)
     pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 
-    play_mp3('speech-announcement.mp3')
+    play_mp3('assets/speech-announcement.mp3')
     play_mp3(file_path)
 
     os.remove(file_path)
