@@ -42,7 +42,7 @@ class VideoSurveillance(object):
         hog = cv2.HOGDescriptor()
         hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-        humans, weights = hog.detectMultiScale(picture, winStride=(4, 4), padding=(8, 8), scale=1.05)
+        humans, weights = hog.detectMultiScale(grayscale, winStride=(4, 4), padding=(8, 8), scale=1.05)
 
         for (x, y, w, h) in humans:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
