@@ -39,6 +39,14 @@ class VideoSurveillance(object):
         for (x, y, w, h) in faces:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
+        hog = cv2.HOGDescriptor()
+        hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+
+        found, humans = hog.detectMultiScale(picture, winStride=(8, 8), padding=(32, 32), scale=1.05)
+
+        for (x, y, w, h) in humans:
+            cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
         cv2.imwrite(enhanced_path, enhanced)
 
         return picture_path, enhanced_path, len(faces) > 0
