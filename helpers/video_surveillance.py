@@ -46,8 +46,6 @@ class VideoSurveillance(object):
     def check(self):
         picture_path, enhanced_path, detected = self.survey()
 
-        print detected
-
         # Delete unnecessary pictures
         if not detected:
             os.remove(picture_path)
