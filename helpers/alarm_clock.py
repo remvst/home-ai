@@ -53,8 +53,8 @@ class AlarmClock(object):
 
         ring_time = datetime.combine(date.today(), current_setting.time)
 
-        # if now < ring_time:
-        #     return
+        if now < ring_time:
+            return
 
         self.rotate()
         if self.ring_handler is not None:
