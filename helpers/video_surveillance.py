@@ -2,18 +2,18 @@ import cv2
 import os
 from datetime import datetime, timedelta
 
-from lib.utils import take_picture
+from utils.camera import take_picture
 
 DEFAULT_MIN_DETECTION_INTERVAL = timedelta(seconds=30)
 
-class VisualHomeCheck(object):
+class VideoSurveillance(object):
 
     def __init__(self, pictures_folder, min_detection_interval=DEFAULT_MIN_DETECTION_INTERVAL):
-        super(VisualHomeCheck, self).__init__()
+        super(VideoSurveillance, self).__init__()
         self.pictures_folder = pictures_folder
         self.min_detection_interval = min_detection_interval
         self.detection_handler = None
-        self.last_detection = datetime.utcnow()
+        self.last_detection = datetime.utcnow() - self.min_detection_interval
 
     def survey(self):
         now = datetime.utcnow()
@@ -45,6 +45,8 @@ class VisualHomeCheck(object):
 
     def check(self):
         picture_path, enhanced_path, detected = self.survey()
+
+        print detected
 
         # Delete unnecessary pictures
         if not detected:
