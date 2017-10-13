@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from kik import KikApi, Configuration
 from kik.messages import PictureMessage, SuggestedResponseKeyboard, TextMessage, TextResponse, messages_from_json
@@ -43,16 +44,14 @@ class KikBot(object):
 
     def handle_messages(self, messages):
         for message in messages:
+            if message.from_user != 'remvst':
+                continue
+
             if isinstance(message, TextMessage):
                 self.handle_text_message(message)
 
     def handle_text_message(self, message):
         body = message.body.lower()
-
-        # if 'check' in body:
-        #     status_message = '\n'.join(['{}: {}'.format(thread.name, 'running' if thread.isAlive() else 'crashed') for thread in threads])
-        #     bot_output.output(status_message)
-        #     return
 
         if 'alarm' in body:
             string = good_morning()
@@ -75,20 +74,14 @@ class KikBot(object):
             return
 
         if 'picture' in body:
-            relative_path = '{}/pictures/my-pic.png'.format(app.static_folder)
+            now = datetime.utcnow()
+            pic_id = now.isoformat()
+
+            relative_path = '{}/pictures/{}.png'.format(app.static_folder, pic_id)
             take_picture(relative_path)
 
             url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(relative_path))
             self.send([PictureMessage(pic_url=url, to=message.from_user)])
-            return
-
-        if 'surveillance' in body:
-            picture_path, enhanced_path, detected = visual_home_check.survey()
-            url = '{}/{}'.format(get_ngrok_url(), bot_output.path_to_static_file(enhanced_path))
-            self.send([PictureMessage(pic_url=url, to=message.from_user)])
-
-            os.remove(picture_path)
-            os.remove(enhanced_path)
             return
 
         add_to_queue(body)
