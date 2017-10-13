@@ -22,11 +22,7 @@ if os.geteuid() == 0:
     sys.exit(1)
 
 workers = [
-    # (alarm_worker, 'Alarm clock'),
     # (welcome_worker, 'Welcome home'),
-    # (ngrok_worker, 'ngrok daemon'),
-    # (http_worker, 'HTTP server'),
-    # (speech_worker, 'Speech queue')
     (alarm_clock, 'Alarm clock'),
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
@@ -40,7 +36,6 @@ for worker, name in workers:
     def crash_handler(exception, description):
         message = 'Thread crashed: {}'.format(description)
         logging.exception(exception)
-        # bot_output.output(message)
 
     thread = InfiniteThread(target=worker, name=name, crash_handler=crash_handler)
     thread.daemon = True
