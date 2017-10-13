@@ -28,6 +28,11 @@ OpenCV dependencies (not sure if necessary):
 sudo apt-get install libopencv-dev python-opencv
 ```
 
+Webcam:
+```sh
+sudo apt-get install fswebcam
+```
+
 Install Python Dependencies:
 ```sh
 pip install -r requirements.txt

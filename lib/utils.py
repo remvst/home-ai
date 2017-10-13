@@ -1,16 +1,11 @@
-import cv2
 import httplib2
 import json
 import logging
 import os
 import psutil
-import StringIO
 import subprocess
 import sys
 
-import pygame
-import pygame.camera
-from skimage.measure import compare_ssim
 
 def is_user_in_network(mac_address, timeout=5000):
     arp_scan = subprocess.check_output([
@@ -48,32 +43,17 @@ def restart_process():
     python = sys.executable
     os.execl(python, python, *sys.argv)
 
-CAMERA_INITIALIZED = False
-
 def take_picture(destination, skip=1, resolution=(1280, 720)):
-    global CAMERA_INITIALIZED
-
-    if not CAMERA_INITIALIZED:
-        pygame.camera.init()
-        CAMERA_INITIALIZED = True
-
-    cameras = pygame.camera.list_cameras()
-    if len(cameras) == 0:
-        raise Exception('No cameras detected, unable to take picture')
-
-    camera = pygame.camera.Camera(cameras[0], resolution)
-    camera.start()
-
-    # Skip frames
-    for i in xrange(skip):
-        camera.get_image()
-
-    # Actually capture
-    img = camera.get_image()
-    pygame.camera.quit()
-
-    # Save to disk
-    pygame.image.save(img, destination)
+    subprocess.check_output([
+        'fswebcam',
+        '-r', '{}x{}'.format(resolution[0], resolution[1]),
+        '--skip', '1',
+        '--frames', '1',
+        '--no-banner',
+        '--quiet',
+        destination
+    ])
 
 def compare_images(a, b):
+    from skimage.measure import compare_ssim
     return compare_ssim(a, b)
