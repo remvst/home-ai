@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exit 0
-
 SPEAKER_MAC_ADDRESS="$1"
 SINK_NAME="$2"
 
