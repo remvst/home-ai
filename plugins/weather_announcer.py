@@ -1,7 +1,7 @@
 import httplib2
 import json
 
-from lib.text_plugin import TextPlugin
+from plugins.text_plugin import TextPlugin
 
 def to_celsius(kelvin_temperature):
     return kelvin_temperature - 273.15
@@ -24,7 +24,7 @@ class WeatherAnnouncer(TextPlugin):
 
         return json.loads(content)
 
-    def generate(self):
+    def generate_string(self):
         try:
             weather = self.fetch_weather()
             next_12_hours_data = weather['list'][:4] # chunks of 3 hours

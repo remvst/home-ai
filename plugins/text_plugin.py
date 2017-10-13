@@ -1,4 +1,4 @@
 class TextPlugin(object):
 
-    def generate(self):
+    def generate_string(self):
         raise NotImplementedError

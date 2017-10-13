@@ -1,7 +1,7 @@
 import httplib2
 import json
 
-from lib.text_plugin import TextPlugin
+from plugins.text_plugin import TextPlugin
 
 class QuoteOfTheDay(TextPlugin):
 
@@ -19,7 +19,7 @@ class QuoteOfTheDay(TextPlugin):
 
         return json.loads(content)
 
-    def generate(self):
+    def generate_string(self):
         try:
             quote_data = self.fetch_quote()
         except:

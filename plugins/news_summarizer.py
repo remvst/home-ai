@@ -4,7 +4,7 @@ import os
 from datetime import date, datetime, time, timedelta
 from dateutil import parser
 
-from lib.text_plugin import TextPlugin
+from plugins.text_plugin import TextPlugin
 
 class NewsSummarizer(TextPlugin):
 
@@ -28,7 +28,7 @@ class NewsSummarizer(TextPlugin):
 
         return json.loads(content)['articles'][:5]
 
-    def generate(self):
+    def generate_string(self):
         lines = ['Here are the headlines for today']
         for source in self.sources:
             try:

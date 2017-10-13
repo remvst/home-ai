@@ -1,0 +1,42 @@
+#!/bin/bash
+
+SPEAKER_MAC_ADDRESS="$1"
+SINK_NAME="$2"
+
+function pair_commands()
+{
+    echo power on
+    echo agent on
+    echo default-agent
+    echo scan on
+    echo pair $SPEAKER_MAC_ADDRESS && sleep 1
+    echo trust $SPEAKER_MAC_ADDRESS
+    echo connect $SPEAKER_MAC_ADDRESS && sleep 10
+    echo exit
+}
+
+function is_device_paired()
+{
+    pacmd list-sinks | grep $SINK_NAME 1>/dev/null
+}
+
+function is_sink_set()
+{
+    pactl stat | grep "Default Sink: $SINK_NAME" 1>/dev/null
+}
+
+# System stuff to enable bluetooth
+sudo systemctl start bluetooth
+pactl load-module module-bluetooth-discover
+
+# Do the connecting stuff
+if ! is_device_paired ; then
+    pair_commands | bluetoothctl
+fi
+
+# Set sink so that audio goes to the speaker
+if ! is_sink_set ; then
+    pacmd set-default-sink $SINK_NAME
+fi
+
+exit 0

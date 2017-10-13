@@ -11,7 +11,7 @@ from oauth2client import tools
 from oauth2client.file import Storage
 from tzlocal import get_localzone
 
-from lib.text_plugin import TextPlugin
+from plugins.text_plugin import TextPlugin
 
 def get_credentials(client_secrets_file, application_name):
     """
@@ -69,7 +69,7 @@ class GoogleCalendarSummarizer(TextPlugin):
 
         return events_result.get('items', [])
 
-    def generate(self):
+    def generate_string(self):
         try:
             events = self.fetch_events()
         except Exception as e:
