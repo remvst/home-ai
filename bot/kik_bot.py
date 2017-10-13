@@ -77,7 +77,7 @@ class KikBot(object):
             now = datetime.utcnow()
             pic_id = now.isoformat()
 
-            relative_path = '{}/pictures/{}.png'.format(app.static_folder, pic_id)
+            relative_path = '{}/pictures/{}.jpg'.format(app.static_folder, pic_id)
             take_picture(relative_path)
 
             url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(relative_path))

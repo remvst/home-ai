@@ -19,8 +19,8 @@ class VideoSurveillance(object):
         now = datetime.utcnow()
         pic_id = now.isoformat()
 
-        picture_path = '{}/{}-picture.png'.format(self.pictures_folder, pic_id)
-        enhanced_path = '{}/{}-enhanced.png'.format(self.pictures_folder, pic_id)
+        picture_path = '{}/{}-picture.jpg'.format(self.pictures_folder, pic_id)
+        enhanced_path = '{}/{}-enhanced.jpg'.format(self.pictures_folder, pic_id)
 
         take_picture(picture_path)
 
