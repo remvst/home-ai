@@ -84,6 +84,12 @@ class KikBot(object):
             self.send([PictureMessage(pic_url=url, to=message.from_user)])
             return
 
+        if 'surveillance' in body:
+            picture_path, enhanced_path, detected = visual_home_check.survey()
+            url = '{}/{}'.format(get_ngrok_url(), bot_output.path_to_static_file(enhanced_path))
+            self.send([PictureMessage(pic_url=url, to=message.from_user)])
+            return
+
         add_to_queue(body)
         self.send([TextMessage(body='Playing on speaker', to=message.from_user)])
 
