@@ -88,7 +88,7 @@ class KikBot(object):
         if 'surveillance' in body:
             surveillance = VideoSurveillance(pictures_folder='{}/surveillance'.format(app.static_folder))
             picture_path, enhanced_path, detected = surveillance.survey()
-            url = '{}/{}'.format(get_ngrok_url(), bot_output.path_to_static_file(enhanced_path))
+            url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(enhanced_path))
             self.send([PictureMessage(pic_url=url, to=message.from_user)])
             return
 
