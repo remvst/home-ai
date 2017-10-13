@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import threading
 
 from flask import Flask, request
 from kik.messages import messages_from_json
@@ -24,6 +25,9 @@ def incoming_messages():
     json_body = json.loads(raw_body)
     messages = messages_from_json(json_body['messages'])
 
-    bot.handle_messages(messages)
+    def worker():
+        bot.handle_messages(messages)
+
+    threading.Thread(target=worker).start()
 
     return '', 200
