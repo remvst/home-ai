@@ -12,7 +12,7 @@ from utils.infinite_thread import InfiniteThread
 from workers.alarm_clock import worker as alarm_clock
 from workers.ngrok import worker as ngrok
 from workers.web_server import worker as web_server
-from workers.speech import worker as speech
+from workers.speech import worker as speech, add_to_queue
 from workers.surveillance import worker as surveillance
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -44,6 +44,8 @@ for worker, name in workers:
     thread.start()
 
 logging.debug('All threads started')
+
+add_to_queue('Initialized home AI')
 
 # Prevent the main thread from dying
 while threading.active_count() > 0:

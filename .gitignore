@@ -1,7 +1,6 @@
 *.pyc
 *.mp3
 config.py
-main.py
 oauth_secret.json
 oauth_secret2.json
 frames
