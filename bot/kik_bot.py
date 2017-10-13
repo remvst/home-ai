@@ -5,6 +5,7 @@ from kik import KikApi, Configuration
 from kik.messages import PictureMessage, SuggestedResponseKeyboard, TextMessage, TextResponse, messages_from_json
 
 import config
+from helpers.video_surveillance import VideoSurveillance
 from scripts.good_morning import generate_string as good_morning
 from utils.camera import take_picture
 from utils.ngrok import get_ngrok_url
@@ -85,7 +86,8 @@ class KikBot(object):
             return
 
         if 'surveillance' in body:
-            picture_path, enhanced_path, detected = visual_home_check.survey()
+            surveillance = VideoSurveillance(pictures_folder='{}/surveillance'.format(app.static_folder))
+            picture_path, enhanced_path, detected = surveillance.survey()
             url = '{}/{}'.format(get_ngrok_url(), bot_output.path_to_static_file(enhanced_path))
             self.send([PictureMessage(pic_url=url, to=message.from_user)])
             return
