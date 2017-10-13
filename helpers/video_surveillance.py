@@ -16,6 +16,8 @@ class VideoSurveillance(object):
         self.last_detection = datetime.utcnow() - self.min_detection_interval
 
     def survey(self):
+        print 'survey start'
+
         now = datetime.utcnow()
         pic_id = now.isoformat()
 
@@ -48,6 +50,8 @@ class VideoSurveillance(object):
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         cv2.imwrite(enhanced_path, enhanced)
+
+        print 'survey end'
 
         return picture_path, enhanced_path, len(faces) > 0
 
