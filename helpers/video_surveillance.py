@@ -1,5 +1,6 @@
 import cv2
 import os
+import threading
 from datetime import datetime, timedelta
 
 from utils.camera import take_picture
@@ -22,38 +23,45 @@ class VideoSurveillance(object):
         picture_path = '{}/{}-picture.jpg'.format(self.pictures_folder, pic_id)
         enhanced_path = '{}/{}-enhanced.jpg'.format(self.pictures_folder, pic_id)
 
-        take_picture(picture_path)
+        take_picture(picture_path, resolution=(640, 360))
 
         picture = cv2.imread(picture_path)
         enhanced = picture.copy()
         grayscale = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
 
-        face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_default.xml')
-        profile_cascade = cv2.CascadeClassifier('assets/haarcascade_profileface.xml')
+        faces = []
+        profiles = []
 
-        print 'faces'
+        def faces_worker():
+            face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_default.xml')
+            faces = face_cascade.detectMultiScale(
+                grayscale,
+                scaleFactor=1.1,
+                minNeighbors=5
+            )
 
-        faces = face_cascade.detectMultiScale(
-            grayscale,
-            scaleFactor=1.1,
-            minNeighbors=5
-        )
+        def profiles_worker():
+            profile_cascade = cv2.CascadeClassifier('assets/haarcascade_profileface.xml')
+            profiles = profile_cascade.detectMultiScale(
+                grayscale,
+                scaleFactor=1.1,
+                minNeighbors=5
+            )
+
+        faces_thread = threading.Thread(target=faces_worker)
+        profiles_thread = threading.Thread(target=profiles_worker)
+
+        faces_thread.start()
+        profiles_thread.start()
+
+        faces_thread.join()
+        profiles_thread.join()
 
         for (x, y, w, h) in faces:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-        print 'profiles'
-
-        profiles = profile_cascade.detectMultiScale(
-            grayscale,
-            scaleFactor=1.1,
-            minNeighbors=5
-        )
-
         for (x, y, w, h) in profiles:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-        print 'done'
 
         cv2.imwrite(enhanced_path, enhanced)
 
