@@ -31,6 +31,8 @@ class VideoSurveillance(object):
         face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_default.xml')
         profile_cascade = cv2.CascadeClassifier('assets/haarcascade_profileface.xml')
 
+        print 'faces'
+
         faces = face_cascade.detectMultiScale(
             grayscale,
             scaleFactor=1.1,
@@ -40,6 +42,8 @@ class VideoSurveillance(object):
         for (x, y, w, h) in faces:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
+        print 'profiles'
+
         profiles = profile_cascade.detectMultiScale(
             grayscale,
             scaleFactor=1.1,
@@ -48,6 +52,8 @@ class VideoSurveillance(object):
 
         for (x, y, w, h) in profiles:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        print 'done'
 
         cv2.imwrite(enhanced_path, enhanced)
 
