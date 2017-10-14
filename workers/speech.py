@@ -1,3 +1,4 @@
+import logging
 import os
 import threading
 from time import sleep
@@ -11,12 +12,18 @@ queue = []
 lock = threading.Lock()
 
 def add_to_queue(string):
-    file_path = 'static/speech/{}.mp3'.format(str(uuid4))
+    logging.debug('Adding to queue: {}'.format(string))
+
+    file_path = 'static/speech/{}.mp3'.format(str(uuid4()))
     text_to_speech(string=string, file_path=file_path)
+
+    logging.debug('Done with text_to_speech')
 
     lock.acquire()
     queue.append(file_path)
     lock.release()
+
+    logging.debug('Added to queue')
 
 def worker():
     while True:
