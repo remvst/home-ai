@@ -23,7 +23,7 @@ class VideoSurveillance(object):
         picture_path = '{}/{}-picture.jpg'.format(self.pictures_folder, pic_id)
         enhanced_path = '{}/{}-enhanced.jpg'.format(self.pictures_folder, pic_id)
 
-        take_picture(picture_path, resolution=(640, 360))
+        take_picture(picture_path)
 
         picture = cv2.imread(picture_path)
         enhanced = picture.copy()
