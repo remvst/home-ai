@@ -25,4 +25,5 @@ surveillance.detection_handler = face_detected
 
 def worker():
     while True:
+        logging.info('Check surveillance')
         surveillance.check()
