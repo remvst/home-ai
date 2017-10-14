@@ -28,9 +28,10 @@ class VideoSurveillance(object):
         enhanced = picture.copy()
         grayscale = cv2.cvtColor(picture, cv2.COLOR_BGR2GRAY)
 
-        faceCascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_default.xml')
+        face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_default.xml')
+        profile_cascade = cv2.CascadeClassifier('assets/haarcascade_profileface.xml')
 
-        faces = faceCascade.detectMultiScale(
+        faces = face_cascade.detectMultiScale(
             grayscale,
             scaleFactor=1.1,
             minNeighbors=5
@@ -38,6 +39,15 @@ class VideoSurveillance(object):
 
         for (x, y, w, h) in faces:
             cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+        profiles = profile_cascade.detectMultiScale(
+            grayscale,
+            scaleFactor=1.1,
+            minNeighbors=5
+        )
+
+        for (x, y, w, h) in profiles:
+            cv2.rectangle(enhanced, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         cv2.imwrite(enhanced_path, enhanced)
 
