@@ -23,7 +23,7 @@ if os.geteuid() == 0:
     sys.exit(1)
 
 workers = [
-    # (surveillance, 'Surveillance'),
+    (surveillance, 'Surveillance'),
     (alarm_clock, 'Alarm clock'),
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
