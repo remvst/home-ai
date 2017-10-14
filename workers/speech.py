@@ -14,8 +14,6 @@ def add_to_queue(string):
     file_path = 'static/speech/{}.mp3'.format(str(uuid4))
     text_to_speech(string=string, file_path=file_path)
 
-    profile_cascade = cv2.CascadeClassifier('assets/haarcascade_profileface.xml')
-
     lock.acquire()
     queue.append(file_path)
     lock.release()
