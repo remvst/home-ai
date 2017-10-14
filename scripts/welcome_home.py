@@ -23,4 +23,4 @@ def generate_string():
         google_calendar_summarizer.generate_string(),
         news_summarizer.generate_string()
     ]
-    return '\n'.join(lines)
+    return '.'.join(lines)
