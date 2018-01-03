@@ -10,13 +10,13 @@ MAX_SPIKE_INTERVAL = 0.5
 MIN_SPIKE_INTERVAL_FRAMES = int(MIN_SPIKE_INTERVAL * RATE)
 MAX_SPIKE_INTERVAL_FRAMES = int(MAX_SPIKE_INTERVAL * RATE)
 
-MIN_SPIKE_VOLUME = 20000
+MIN_SPIKE_VOLUME = 10000
 
 
 def record_microphone(duration, rate=44100, chunk_size=1024):
     audio = pyaudio.PyAudio()
 
-    stream = audio.open(format=pyaudio.paInt16, channels=2,
+    stream = audio.open(format=pyaudio.paInt16, channels=1,
                         rate=rate, input=True,
                         frames_per_buffer=chunk_size,
                         input_device_index=1)
@@ -33,7 +33,7 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
     return numpy.fromstring(b''.join(frames), 'Int16')
 
 def detect_volume_spikes(signal, min_interval, min_volume):
-    indexes = peakutils.indexes(signal, thres=0.8, min_dist=MIN_SPIKE_INTERVAL_FRAMES)
+    indexes = peakutils.indexes(signal, thres=0.2, min_dist=MIN_SPIKE_INTERVAL_FRAMES)
 
     return [index for index in indexes if signal[index] > min_volume]
 
