@@ -36,8 +36,6 @@ def worker():
         finally:
             lock.release()
 
-        sleep(0.5)
-
 def play_speech(file_path):
     pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 
