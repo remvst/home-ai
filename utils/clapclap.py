@@ -16,7 +16,7 @@ MIN_SPIKE_VOLUME = 20000
 def record_microphone(duration, rate=44100, chunk_size=1024):
     audio = pyaudio.PyAudio()
 
-    stream = audio.open(format=pyaudio.paInt16, channels=1,
+    stream = audio.open(format=pyaudio.paInt16, channels=2,
                         rate=rate, input=True,
                         frames_per_buffer=chunk_size,
                         input_device_index=1)
