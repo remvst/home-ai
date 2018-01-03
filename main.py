@@ -9,11 +9,12 @@ from time import sleep
 
 import config
 from utils.infinite_thread import InfiniteThread
+from utils.sound import play_mp3
 from workers.alarm_clock import worker as alarm_clock
 from workers.clapclap import worker as clapclap
 from workers.ngrok import worker as ngrok
 from workers.web_server import worker as web_server
-from workers.speech import worker as speech, add_to_queue
+from workers.speech import worker as speech
 from workers.surveillance import worker as surveillance
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -47,7 +48,7 @@ for worker, name in workers:
 
 logging.debug('All threads started')
 
-add_to_queue('Initialized home AI')
+play_mp3('assets/initialized-home-ai.mp3')
 
 # Prevent the main thread from dying
 while threading.active_count() > 0:
