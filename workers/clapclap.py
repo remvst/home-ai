@@ -13,5 +13,5 @@ def worker():
         wait_for_clap_clap()
 
         # We got a clap, do something
-        string = good_morning()
-        add_to_queue(string)
+        # string = good_morning()
+        add_to_queue('you clapped')
