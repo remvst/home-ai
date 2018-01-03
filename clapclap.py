@@ -1,6 +1,7 @@
 import numpy
 import peakutils
 import pyaudio
+import wave
 
 RATE = 44100
 
@@ -18,7 +19,8 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
 
     stream = audio.open(format=pyaudio.paInt16, channels=1,
                         rate=rate, input=True,
-                        frames_per_buffer=chunk_size)
+                        frames_per_buffer=chunk_size,
+                        input_device_index=1)
 
     frames = []
     for i in range(0, int(rate * duration), chunk_size):
@@ -28,6 +30,13 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
     stream.stop_stream()
     stream.close()
     audio.terminate()
+
+    waveFile = wave.open('yoyo.wav', 'wb')
+    waveFile.setnchannels(1)
+    waveFile.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
+    waveFile.setframerate(RATE)
+    waveFile.writeframes(b''.join(frames))
+    waveFile.close()
 
     return numpy.fromstring(b''.join(frames), 'Int16')
 
@@ -58,6 +67,8 @@ def wait_for_clap_clap():
 
         if contains_clap_clap(spike_indexes, MAX_SPIKE_INTERVAL_FRAMES):
             break
+
+        print 'noclap'
 
 while True:
     wait_for_clap_clap()
