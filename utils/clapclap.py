@@ -1,3 +1,5 @@
+import logging
+
 import numpy
 import peakutils
 import pyaudio
@@ -16,10 +18,24 @@ MIN_SPIKE_VOLUME = 10000
 def record_microphone(duration, rate=44100, chunk_size=1024):
     audio = pyaudio.PyAudio()
 
+    input_device_index = None
+    for i in xrange(audio.get_device_count()):
+        device = audio.get_device_info_by_index(i)
+        if device['maxInputChannels'] > 0:
+            input_device_index = i
+            break
+
+    if input_device_index is None:
+        logging.info('No input device')
+        return None
+
+    input_device = audio.get_device_info_by_index(input_device_index)
+    logging.debug('Using {} as input device'.format(input_device['name']))
+
     stream = audio.open(format=pyaudio.paInt16, channels=1,
                         rate=rate, input=True,
                         frames_per_buffer=chunk_size,
-                        input_device_index=1)
+                        input_device_index=input_device_index)
 
     frames = []
     for i in range(0, int(rate * duration), chunk_size):
