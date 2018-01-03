@@ -35,8 +35,6 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
 def detect_volume_spikes(signal, min_interval, min_volume):
     indexes = peakutils.indexes(signal, thres=0.8, min_dist=MIN_SPIKE_INTERVAL_FRAMES)
 
-    print indexes
-
     return [index for index in indexes if signal[index] > min_volume]
 
 def contains_clap_clap(spike_indexes, max_spike_interval):
@@ -62,9 +60,6 @@ def wait_for_clap_clap():
         if contains_clap_clap(spike_indexes, MAX_SPIKE_INTERVAL_FRAMES):
             break
 
-        print 'noclap'
-
-while True:
-    wait_for_clap_clap()
-    print 'clap clap!'
-    break
+if __name__ == "__main__":
+    while True:
+        wait_for_clap_clap()

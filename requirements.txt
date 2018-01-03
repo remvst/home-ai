@@ -13,3 +13,5 @@ Pygame==1.9.3
 scikit-image==0.13.1
 Pillow==2.2.1
 numpy==1.13.3
+PeakUtils==1.1.0
+PyAudio==0.2.11

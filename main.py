@@ -10,6 +10,7 @@ from time import sleep
 import config
 from utils.infinite_thread import InfiniteThread
 from workers.alarm_clock import worker as alarm_clock
+from workers.clapclap import worker as clapclap
 from workers.ngrok import worker as ngrok
 from workers.web_server import worker as web_server
 from workers.speech import worker as speech, add_to_queue
@@ -27,7 +28,8 @@ workers = [
     (alarm_clock, 'Alarm clock'),
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
-    (web_server, 'Web server')
+    (web_server, 'Web server'),
+    (clapclap, 'Clap clap detector')
 ]
 
 logging.debug('Starting threads')
