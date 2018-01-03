@@ -77,5 +77,6 @@ def wait_for_clap_clap():
             break
 
 if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.DEBUG)
     while True:
         wait_for_clap_clap()
