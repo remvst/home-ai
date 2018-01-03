@@ -67,3 +67,4 @@ def wait_for_clap_clap():
 while True:
     wait_for_clap_clap()
     print 'clap clap!'
+    break
