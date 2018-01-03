@@ -30,7 +30,7 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
         return None
 
     input_device = audio.get_device_info_by_index(input_device_index)
-    logging.debug('Using {} as input device'.format(input_device['name']))
+    logging.debug(u'Using {} as input device'.format(input_device['name']))
 
     stream = audio.open(format=pyaudio.paInt16, channels=1,
                         rate=rate, input=True,
