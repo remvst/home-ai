@@ -1,7 +1,6 @@
 import numpy
 import peakutils
 import pyaudio
-import wave
 
 RATE = 44100
 
@@ -31,17 +30,12 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
     stream.close()
     audio.terminate()
 
-    waveFile = wave.open('yoyo.wav', 'wb')
-    waveFile.setnchannels(1)
-    waveFile.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
-    waveFile.setframerate(RATE)
-    waveFile.writeframes(b''.join(frames))
-    waveFile.close()
-
     return numpy.fromstring(b''.join(frames), 'Int16')
 
 def detect_volume_spikes(signal, min_interval, min_volume):
     indexes = peakutils.indexes(signal, thres=0.8, min_dist=MIN_SPIKE_INTERVAL_FRAMES)
+
+    print indexes
 
     return [index for index in indexes if signal[index] > min_volume]
 
