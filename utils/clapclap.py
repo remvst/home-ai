@@ -23,7 +23,7 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
         device = audio.get_device_info_by_index(i)
         if device['maxInputChannels'] > 0:
             input_device_index = i
-            break
+            # break
 
     if input_device_index is None:
         logging.info('No input device')
