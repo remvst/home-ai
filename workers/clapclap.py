@@ -9,6 +9,7 @@ from workers.speech import add_to_queue
 
 def worker():
     while True:
+        print 'got a clap?'
         wait_for_clap_clap()
 
         # We got a clap, do something
