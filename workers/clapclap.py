@@ -10,7 +10,9 @@ from workers.speech import add_to_queue
 def worker():
     while True:
         print 'got a clap?'
+        logging.debug('got a clap?')
         wait_for_clap_clap()
+        logging.debug('processed!')
 
         # We got a clap, do something
         play_mp3('assets/clap-detected.mp3')
