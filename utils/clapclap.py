@@ -21,9 +21,10 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
     input_device_index = None
     for i in xrange(audio.get_device_count()):
         device = audio.get_device_info_by_index(i)
+        logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
+
         if device['maxInputChannels'] > 0:
             input_device_index = i
-            logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
             # break
 
     if input_device_index is None:
