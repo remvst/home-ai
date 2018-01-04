@@ -12,11 +12,11 @@ def ring():
     add_to_queue(string)
 
 alarm_clock = AlarmClock([
-    AlarmClockSetting(weekday=0, time=time(hour=10, minute=0)),
-    AlarmClockSetting(weekday=1, time=time(hour=10, minute=0)),
-    AlarmClockSetting(weekday=2, time=time(hour=10, minute=0)),
-    AlarmClockSetting(weekday=3, time=time(hour=10, minute=0)),
-    AlarmClockSetting(weekday=4, time=time(hour=10, minute=0)),
+    AlarmClockSetting(weekday=0, time=time(hour=9, minute=0)),
+    AlarmClockSetting(weekday=1, time=time(hour=9, minute=0)),
+    AlarmClockSetting(weekday=2, time=time(hour=9, minute=0)),
+    AlarmClockSetting(weekday=3, time=time(hour=9, minute=0)),
+    AlarmClockSetting(weekday=4, time=time(hour=9, minute=0)),
     AlarmClockSetting(weekday=5, time=time(hour=10, minute=30)),
     AlarmClockSetting(weekday=6, time=time(hour=10, minute=30))
 ])
