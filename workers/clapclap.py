@@ -15,7 +15,7 @@ def worker():
 
     while True:
         logging.debug('got a clap?')
-        wait_for_clap_clap()
+        wait_for_clap_clap(device_search_string='Microsoft')
         logging.debug('processed!')
 
         # We got a clap, do something

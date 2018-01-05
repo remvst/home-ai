@@ -15,7 +15,7 @@ MAX_SPIKE_INTERVAL_FRAMES = int(MAX_SPIKE_INTERVAL * RATE)
 MIN_SPIKE_VOLUME = 10000
 
 
-def record_microphone(duration, rate=44100, chunk_size=1024):
+def record_microphone(duration, rate=44100, chunk_size=1024, device_search_string=None):
     audio = pyaudio.PyAudio()
 
     input_device_index = None
@@ -23,9 +23,12 @@ def record_microphone(duration, rate=44100, chunk_size=1024):
         device = audio.get_device_info_by_index(i)
         logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
 
+        if device_search_string is not None and device_search_string not in device['name']:
+            continue
+
         if device['maxInputChannels'] > 0:
             input_device_index = i
-            # break
+            break
 
     if input_device_index is None:
         logging.info('No input device')
@@ -69,9 +72,9 @@ def contains_clap_clap(spike_indexes, max_spike_interval):
 
     return min(intervals) < max_spike_interval
 
-def wait_for_clap_clap():
+def wait_for_clap_clap(device_search_string=None):
     while True:
-        signal = record_microphone(duration=1, rate=RATE)
+        signal = record_microphone(duration=1, rate=RATE, device_search_string=device_search_string)
 
         spike_indexes = detect_volume_spikes(signal, min_interval=MIN_SPIKE_INTERVAL_FRAMES, min_volume=MIN_SPIKE_VOLUME)
 
