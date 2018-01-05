@@ -24,7 +24,7 @@ def record_microphone(duration, rate=44100, chunk_size=1024, device_search_strin
             device = audio.get_device_info_by_index(i)
             logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
 
-            if device_search_string is not None and device_search_string not in device['name']:
+            if device_search_string and device['name'] and device_search_string not in device['name']:
                 continue
 
             if device['maxInputChannels'] > 0:
