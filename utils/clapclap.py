@@ -76,9 +76,12 @@ def contains_clap_clap(spike_indexes, max_spike_interval):
 
 def wait_for_clap_clap(device_search_string=None):
     while True:
-        signal = record_microphone(duration=1.5, rate=RATE, device_search_string=device_search_string)
+        signal = record_microphone(duration=0.5, rate=RATE, device_search_string=device_search_string)
 
         spike_indexes = detect_volume_spikes(signal, min_interval=MIN_SPIKE_INTERVAL_FRAMES, min_volume=MIN_SPIKE_VOLUME)
+
+        if len(spike_indexes) > 0:
+            break
 
         if contains_clap_clap(spike_indexes, MAX_SPIKE_INTERVAL_FRAMES):
             break
