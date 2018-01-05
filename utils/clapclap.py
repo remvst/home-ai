@@ -22,7 +22,6 @@ def record_microphone(duration, rate=44100, chunk_size=1024, device_search_strin
         input_device_index = None
         for i in xrange(audio.get_device_count()):
             device = audio.get_device_info_by_index(i)
-            logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
 
             if device_search_string and device['name'] and device_search_string not in device['name']:
                 continue
@@ -36,7 +35,7 @@ def record_microphone(duration, rate=44100, chunk_size=1024, device_search_strin
             return None
 
         input_device = audio.get_device_info_by_index(input_device_index)
-        logging.debug(u'Using {} as input device (#{})'.format(input_device['name'], input_device_index))
+        logging.debug(u'Using {} as input device'.format(input_device['name']))
 
         stream = audio.open(format=pyaudio.paInt16, channels=1,
                             rate=rate, input=True,
