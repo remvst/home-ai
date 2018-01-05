@@ -18,40 +18,42 @@ MIN_SPIKE_VOLUME = 10000
 def record_microphone(duration, rate=44100, chunk_size=1024, device_search_string=None):
     audio = pyaudio.PyAudio()
 
-    input_device_index = None
-    for i in xrange(audio.get_device_count()):
-        device = audio.get_device_info_by_index(i)
-        logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
+    try:
+        input_device_index = None
+        for i in xrange(audio.get_device_count()):
+            device = audio.get_device_info_by_index(i)
+            logging.debug(u'#{}: {} (input channels: {})'.format(i,device['name'],device['maxInputChannels']))
 
-        if device_search_string is not None and device_search_string not in device['name']:
-            continue
+            if device_search_string is not None and device_search_string not in device['name']:
+                continue
 
-        if device['maxInputChannels'] > 0:
-            input_device_index = i
-            break
+            if device['maxInputChannels'] > 0:
+                input_device_index = i
+                break
 
-    if input_device_index is None:
-        logging.info('No input device')
-        return None
+        if input_device_index is None:
+            logging.info('No input device')
+            return None
 
-    input_device = audio.get_device_info_by_index(input_device_index)
-    logging.debug(u'Using {} as input device (#{})'.format(input_device['name'], input_device_index))
+        input_device = audio.get_device_info_by_index(input_device_index)
+        logging.debug(u'Using {} as input device (#{})'.format(input_device['name'], input_device_index))
 
-    stream = audio.open(format=pyaudio.paInt16, channels=1,
-                        rate=rate, input=True,
-                        frames_per_buffer=chunk_size,
-                        input_device_index=input_device_index)
+        stream = audio.open(format=pyaudio.paInt16, channels=1,
+                            rate=rate, input=True,
+                            frames_per_buffer=chunk_size,
+                            input_device_index=input_device_index)
 
-    frames = []
-    for i in range(0, int(rate * duration), chunk_size):
-        data = stream.read(chunk_size, exception_on_overflow=False)
-        frames.append(data)
+        frames = []
+        for i in range(0, int(rate * duration), chunk_size):
+            data = stream.read(chunk_size, exception_on_overflow=False)
+            frames.append(data)
 
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
+        stream.stop_stream()
+        stream.close()
 
-    return numpy.fromstring(b''.join(frames), 'Int16')
+        return numpy.fromstring(b''.join(frames), 'Int16')
+    finally:
+        audio.terminate()
 
 def detect_volume_spikes(signal, min_interval, min_volume):
     indexes = peakutils.indexes(signal, thres=0.2, min_dist=MIN_SPIKE_INTERVAL_FRAMES)
