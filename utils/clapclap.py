@@ -43,6 +43,7 @@ def wait_for_clap_clap(rate=44100, chunk_size=1024, device_search_string=None):
                             input_device_index=device['index'])
 
         last_spike = datetime.utcnow()
+        spike_count = 0
 
         while True:
             data = stream.read(chunk_size, exception_on_overflow=False)
@@ -61,7 +62,12 @@ def wait_for_clap_clap(rate=44100, chunk_size=1024, device_search_string=None):
             last_spike = now
 
             if timedelta(seconds=MIN_SPIKE_INTERVAL) < interval < timedelta(seconds=MAX_SPIKE_INTERVAL):
-                break
+                spike_count += 1
+                if spike_count >= 3:
+                    break
+            else:
+                spike_count = 0
+
 
         stream.stop_stream()
         stream.close()
