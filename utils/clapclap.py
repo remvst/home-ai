@@ -1,4 +1,6 @@
 import logging
+from datetime import datetime, timedelta
+from time import sleep
 
 import numpy
 import peakutils
@@ -9,48 +11,60 @@ RATE = 44100
 MIN_SPIKE_INTERVAL = 0.1
 MAX_SPIKE_INTERVAL = 0.5
 
-MIN_SPIKE_INTERVAL_FRAMES = int(MIN_SPIKE_INTERVAL * RATE)
-MAX_SPIKE_INTERVAL_FRAMES = int(MAX_SPIKE_INTERVAL * RATE)
-
-MIN_SPIKE_VOLUME = 10000
+MIN_SPIKE_VOLUME = 20000
 
 
-def record_microphone(duration, rate=44100, chunk_size=1024, device_search_string=None):
+def find_input_device(audio, search_string=None):
+    device_index = None
+    for i in xrange(audio.get_device_count()):
+        device = audio.get_device_info_by_index(i)
+
+        if device['name'] and search_string and search_string not in device['name']:
+            continue
+
+        if device['maxInputChannels'] == 0:
+            continue
+
+        return device
+
+    return None
+
+def wait_for_clap_clap(rate=44100, chunk_size=1024, device_search_string=None):
     audio = pyaudio.PyAudio()
 
     try:
-        input_device_index = None
-        for i in xrange(audio.get_device_count()):
-            device = audio.get_device_info_by_index(i)
-
-            if device_search_string and device['name'] and device_search_string not in device['name']:
-                continue
-
-            if device['maxInputChannels'] > 0:
-                input_device_index = i
-                break
-
-        if input_device_index is None:
-            logging.info('No input device')
-            return None
-
-        input_device = audio.get_device_info_by_index(input_device_index)
-        logging.debug(u'Using {} as input device'.format(input_device['name']))
+        device = find_input_device(audio, device_search_string)
+        if device is None:
+            raise Exception('Unable to find input device')
 
         stream = audio.open(format=pyaudio.paInt16, channels=1,
                             rate=rate, input=True,
                             frames_per_buffer=chunk_size,
-                            input_device_index=input_device_index)
+                            input_device_index=device['index'])
 
-        frames = []
-        for i in range(0, int(rate * duration), chunk_size):
+        last_spike = datetime.utcnow()
+
+        while True:
             data = stream.read(chunk_size, exception_on_overflow=False)
-            frames.append(data)
+
+            signal = numpy.fromstring(data, 'Int16')
+
+            peak = numpy.max(numpy.abs(signal)) * 2
+            # bars="#"*int(50*peak/2**16)
+            # print("%05d %s"%(peak,bars))
+
+            if peak < MIN_SPIKE_VOLUME:
+                continue
+
+            now = datetime.utcnow()
+            interval = now - last_spike
+            last_spike = now
+
+            if timedelta(seconds=MIN_SPIKE_INTERVAL) < interval < timedelta(seconds=MAX_SPIKE_INTERVAL):
+                break
 
         stream.stop_stream()
         stream.close()
-
-        return numpy.fromstring(b''.join(frames), 'Int16')
     finally:
         audio.terminate()
 
@@ -73,19 +87,7 @@ def contains_clap_clap(spike_indexes, max_spike_interval):
 
     return min(intervals) < max_spike_interval
 
-def wait_for_clap_clap(device_search_string=None):
-    while True:
-        signal = record_microphone(duration=0.5, rate=RATE, device_search_string=device_search_string)
-
-        spike_indexes = detect_volume_spikes(signal, min_interval=MIN_SPIKE_INTERVAL_FRAMES, min_volume=MIN_SPIKE_VOLUME)
-
-        if len(spike_indexes) > 0:
-            break
-
-        if contains_clap_clap(spike_indexes, MAX_SPIKE_INTERVAL_FRAMES):
-            break
-
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     while True:
-        wait_for_clap_clap()
+        wait_for_clap_clap(device_search_string='Microsoft')
