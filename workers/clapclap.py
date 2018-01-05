@@ -9,14 +9,8 @@ from utils.sound import play_mp3
 from workers.speech import add_to_queue
 
 def worker():
-    logging.debug('sleeeping.....')
-    sleep(10)
-    logging.debug('done sleeping')
-
     while True:
-        logging.debug('got a clap?')
         wait_for_clap_clap(device_search_string='Microsoft')
-        logging.debug('processed!')
 
         # We got a clap, do something
         play_mp3('assets/clap-detected.mp3')
