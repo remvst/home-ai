@@ -9,9 +9,9 @@ import pyaudio
 RATE = 44100
 
 MIN_SPIKE_INTERVAL = 0.1
-MAX_SPIKE_INTERVAL = 0.5
+MAX_SPIKE_INTERVAL = 0.3
 
-MIN_SPIKE_VOLUME = 20000
+MIN_SPIKE_VOLUME = 10000
 
 
 def find_input_device(audio, search_string=None):
@@ -50,7 +50,7 @@ def wait_for_clap_clap(rate=44100, chunk_size=1024, device_search_string=None):
 
             signal = numpy.fromstring(data, 'Int16')
 
-            peak = numpy.max(numpy.abs(signal)) * 2
+            peak = numpy.average(numpy.abs(signal)) * 2
             # bars="#"*int(50*peak/2**16)
             # print("%05d %s"%(peak,bars))
 
@@ -61,13 +61,14 @@ def wait_for_clap_clap(rate=44100, chunk_size=1024, device_search_string=None):
             interval = now - last_spike
             last_spike = now
 
-            if timedelta(seconds=MIN_SPIKE_INTERVAL) < interval < timedelta(seconds=MAX_SPIKE_INTERVAL):
-                spike_count += 1
-                if spike_count >= 3:
-                    break
-            else:
+            if interval > timedelta(seconds=MAX_SPIKE_INTERVAL):
                 spike_count = 0
 
+            if interval > timedelta(seconds=MIN_SPIKE_INTERVAL):
+                spike_count += 1
+
+            if spike_count >= 3:
+                break
 
         stream.stop_stream()
         stream.close()
