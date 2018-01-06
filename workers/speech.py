@@ -12,7 +12,7 @@ queue = []
 lock = threading.Lock()
 
 def add_to_queue(string):
-    logging.debug('Adding to queue: {}'.format(string))
+    logging.debug(u'Adding to queue: {}'.format(string))
 
     file_path = 'static/speech/{}.mp3'.format(str(uuid4()))
     text_to_speech(string=string, file_path=file_path)
