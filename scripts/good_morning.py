@@ -35,4 +35,4 @@ def generate_string():
         quote_of_the_day.generate_string(),
         'Have an amazing day'
     ]
-    return '.'.join(lines)
+    return u'.'.join(lines)
