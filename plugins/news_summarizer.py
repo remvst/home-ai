@@ -15,7 +15,7 @@ class NewsSummarizer(TextPlugin):
         self.sources = sources
 
     def fetch_articles(self, source):
-        url = 'https://newsapi.org/v1/articles?source={}&sortBy={}&apiKey={}'.format(
+        url = u'https://newsapi.org/v1/articles?source={}&sortBy={}&apiKey={}'.format(
             source,
             'top',
             self.api_key
@@ -39,4 +39,4 @@ class NewsSummarizer(TextPlugin):
                 logging.exception(ex)
                 return 'Error getting {} news headlines'.format(source)
 
-        return '. '.join(lines)
+        return u'. '.join(lines)

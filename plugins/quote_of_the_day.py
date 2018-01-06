@@ -25,7 +25,7 @@ class QuoteOfTheDay(TextPlugin):
         except:
             return 'Error fetching quote of the day'
 
-        return 'Quote of the day by {}: {}'.format(
+        return u'Quote of the day by {}: {}'.format(
             quote_data['contents']['quotes'][0]['author'],
             quote_data['contents']['quotes'][0]['quote']
         )

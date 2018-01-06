@@ -73,7 +73,7 @@ class GoogleCalendarSummarizer(TextPlugin):
         try:
             events = self.fetch_events()
         except Exception as e:
-            return 'Error getting Google Calendar events: {}'.format(e.message)
+            return u'Error getting Google Calendar events: {}'.format(e.message)
 
         if len(events) == 0:
             return 'You have no events scheduled for today'
@@ -85,11 +85,11 @@ class GoogleCalendarSummarizer(TextPlugin):
 
             if 'dateTime' in event['start']:
                 event_time = parser.parse(event['start']['dateTime'])
-                event_time_format = 'at {}'.format(event_time.strftime('%I:%M%p'))
+                event_time_format = u'at {}'.format(event_time.strftime('%I:%M%p'))
             else:
                 event_time_format = 'the whole day'
 
-            line = '{}, {}'.format(event_name, event_time_format)
+            line = u'{}, {}'.format(event_name, event_time_format)
             lines.append(line)
 
-        return '. '.join(lines)
+        return u'. '.join(lines)
