@@ -1,5 +1,6 @@
 import httplib2
 import json
+import logging
 import os
 from datetime import date, datetime, time, timedelta
 from dateutil import parser
@@ -40,3 +41,15 @@ class NewsSummarizer(TextPlugin):
                 return 'Error getting {} news headlines'.format(source)
 
         return u'. '.join(lines)
+
+    def generate_urls(self):
+        urls = []
+
+        for source in self.sources:
+            try:
+                articles = self.fetch_articles(source)
+                urls.extend([article['url'] for article in articles])
+            except Exception as ex:
+                logging.exception(ex)
+
+        return urls
