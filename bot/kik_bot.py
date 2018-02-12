@@ -54,6 +54,8 @@ class KikBot(object):
             self.handle_text_message(message)
 
     def handle_text(self, text):
+        text = text.lower()
+
         if 'alarm' in text or 'clock' in text:
             string = good_morning()
             add_to_queue(string)
