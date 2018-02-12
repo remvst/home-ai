@@ -11,7 +11,7 @@ function pair_commands()
     echo scan on
     echo pair $SPEAKER_MAC_ADDRESS && sleep 1
     echo trust $SPEAKER_MAC_ADDRESS
-    echo connect $SPEAKER_MAC_ADDRESS && sleep 10
+    echo connect $SPEAKER_MAC_ADDRESS && sleep 5
     echo exit
 }
 
