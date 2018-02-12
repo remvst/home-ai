@@ -1,7 +1,7 @@
 from pocketsphinx import LiveSpeech
 
 from bot.kik_bot import bot
-
+from workers.speech import add_to_queue
 
 speech = LiveSpeech(sampling_rate=16000, lm='assets/dictionary/8586.lm', dic='assets/dictionary/8586.dic', audio_device='0')
 
@@ -13,4 +13,5 @@ def worker():
         if 'please' not in text:
             continue
 
-        bot.handle_text(text)
+        if not bot.handle_text(text):
+            add_to_queue('unrecognized command')
