@@ -9,7 +9,7 @@ speech = LiveSpeech(sampling_rate=16000, lm='assets/dictionary/9126.lm', dic='as
 
 def worker():
     for phrase in speech:
-        text = phrase.hypothesis()
+        text = phrase.hypothesis().lower()
         logging.debug('Text to speech: {}'.format(text))
 
         if 'please' not in text:
