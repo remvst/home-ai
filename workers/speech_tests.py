@@ -7,7 +7,7 @@ from workers.speech import add_to_queue
 
 def worker():
     print 'Initializing speech things'
-    speech = LiveSpeech(sampling_rate=16000, lm='assets/dictionary/8586.lm', dic='assets/dictionary/8586.dic', audio_device='0')
+    speech = LiveSpeech(sampling_rate=16000, lm='assets/dictionary/9126.lm', dic='assets/dictionary/9126.dic', audio_device='0')
     print 'Initialized speech things'
 
     for phrase in speech:
