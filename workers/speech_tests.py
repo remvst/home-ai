@@ -3,7 +3,7 @@ from pocketsphinx import LiveSpeech
 from bot.kik_bot import bot
 
 
-speech = LiveSpeech(sampling_rate=16000, lm='9891.lm', dic='9891.dic', audio_device='0')
+speech = LiveSpeech(sampling_rate=16000, lm='assets/dictionary/8586.lm', dic='assets/dictionary/8586.dic', audio_device='0')
 
 def worker():
     for phrase in speech:
