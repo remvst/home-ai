@@ -1,0 +1,62 @@
+Language model created by QuickLM on Mon Feb 12 00:23:04 EST 2018
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 5 sentences and 11 words
+
+\data\
+ngram 1=11
+ngram 2=14
+ngram 3=14
+
+\1-grams:
+-1.0170 </s> -0.3010
+-1.0170 <s> -0.2571
+-1.7160 A -0.2840
+-1.4150 ALARM -0.2478
+-1.7160 CLOCK -0.2571
+-1.4150 PICTURE -0.2571
+-1.0170 PLEASE -0.2478
+-1.4150 RUN -0.2840
+-1.7160 SAY -0.2926
+-1.7160 SOMETHING -0.2571
+-1.7160 TAKE -0.2926
+
+\2-grams:
+-0.3010 <s> PLEASE 0.0000
+-0.3010 A PICTURE 0.0000
+-0.6021 ALARM </s> -0.3010
+-0.6021 ALARM CLOCK 0.0000
+-0.3010 CLOCK </s> -0.3010
+-0.3010 PICTURE </s> -0.3010
+-1.0000 PLEASE PICTURE 0.0000
+-0.6990 PLEASE RUN 0.0000
+-1.0000 PLEASE SAY 0.0000
+-1.0000 PLEASE TAKE 0.0000
+-0.3010 RUN ALARM 0.0000
+-0.3010 SAY SOMETHING 0.0000
+-0.3010 SOMETHING </s> -0.3010
+-0.3010 TAKE A 0.0000
+
+\3-grams:
+-1.0000 <s> PLEASE PICTURE
+-0.6990 <s> PLEASE RUN
+-1.0000 <s> PLEASE SAY
+-1.0000 <s> PLEASE TAKE
+-0.3010 A PICTURE </s>
+-0.3010 ALARM CLOCK </s>
+-0.3010 PLEASE PICTURE </s>
+-0.3010 PLEASE RUN ALARM
+-0.3010 PLEASE SAY SOMETHING
+-0.3010 PLEASE TAKE A
+-0.6021 RUN ALARM </s>
+-0.6021 RUN ALARM CLOCK
+-0.3010 SAY SOMETHING </s>
+-0.3010 TAKE A PICTURE
+
+\end\
