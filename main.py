@@ -32,7 +32,7 @@ workers = [
     (ngrok, 'ngrok'),
     (web_server, 'Web server'),
     # (clapclap, 'Clap clap detector'),
-    (speech_tests, 'Speech tests')
+    # (speech_tests, 'Speech tests')
 ]
 
 logging.debug('Starting threads')
