@@ -20,4 +20,3 @@ def worker():
 
         if not bot.handle_text(text):
             play_mp3('assets/error.mp3')
-            add_to_queue('unrecognized command')
