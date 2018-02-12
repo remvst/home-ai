@@ -45,36 +45,36 @@ class KikBot(object):
 
     def handle_messages(self, messages):
         for message in messages:
-            if message.from_user != 'remvst':
+            if message.from_user != config.KIK_BOT_RECIPIENT_USERNAME:
                 continue
 
-            if isinstance(message, TextMessage):
-                self.handle_text_message(message)
+            if not isinstance(message, TextMessage):
+                continue
 
-    def handle_text_message(self, message):
-        body = message.body.lower()
+            self.handle_text_message(message)
 
-        if 'alarm' in body:
+    def handle_text(self, text):
+        if 'alarm' in text or 'clock' in text:
             string = good_morning()
             add_to_queue(string)
-            self.send([TextMessage(body='Playing alarm', to=message.from_user)])
-            return
+            self.send([TextMessage(body='Playing alarm', to=config.KIK_BOT_RECIPIENT_USERNAME)])
+            return True
 
-        if 'tunnel' in body:
-            self.send([TextMessage(body=get_ngrok_url(), to=message.from_user)])
-            return
+        if 'tunnel' in text:
+            self.send([TextMessage(body=get_ngrok_url(), to=config.KIK_BOT_RECIPIENT_USERNAME)])
+            return True
 
-        if 'kill' in body:
-            self.send([TextMessage(body='Terminating process', to=message.from_user)])
+        if 'kill' in text:
+            self.send([TextMessage(body='Terminating process', to=config.KIK_BOT_RECIPIENT_USERNAME)])
             exit(1)
-            return
+            return True
 
-        if 'restart' in body:
-            self.send([TextMessage(body='Restarting process', to=message.from_user)])
+        if 'restart' in text:
+            self.send([TextMessage(body='Restarting process', to=config.KIK_BOT_RECIPIENT_USERNAME)])
             restart_process()
-            return
+            return True
 
-        if 'picture' in body:
+        if 'picture' in text:
             now = datetime.utcnow()
             pic_id = now.isoformat()
 
@@ -82,18 +82,24 @@ class KikBot(object):
             take_picture(relative_path)
 
             url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(relative_path))
-            self.send([PictureMessage(pic_url=url, to=message.from_user)])
-            return
+            self.send([PictureMessage(pic_url=url, to=config.KIK_BOT_RECIPIENT_USERNAME)])
+            return True
 
-        if 'surveillance' in body:
+        if 'surveillance' in text:
             surveillance = VideoSurveillance(pictures_folder='{}/surveillance'.format(app.static_folder))
             picture_path, enhanced_path, detected = surveillance.survey()
             url = '{}/{}'.format(get_ngrok_url(), path_to_static_file(enhanced_path))
-            self.send([PictureMessage(pic_url=url, to=message.from_user)])
-            return
+            self.send([PictureMessage(pic_url=url, to=config.KIK_BOT_RECIPIENT_USERNAME)])
+            return True
 
-        add_to_queue(body)
-        self.send([TextMessage(body='Playing on speaker', to=message.from_user)])
+        return False
+
+    def handle_text_message(self, message):
+        body = message.body.lower()
+
+        if not self.handle_text(body):
+            add_to_queue(body)
+            self.send([TextMessage(body='Playing on speaker', to=config.KIK_BOT_RECIPIENT_USERNAME)])
 
 
 bot = KikBot()

@@ -15,6 +15,7 @@ from workers.clapclap import worker as clapclap
 from workers.ngrok import worker as ngrok
 from workers.web_server import worker as web_server
 from workers.speech import worker as speech
+from workers.speech_tests import worker as speech_tests
 from workers.surveillance import worker as surveillance
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -30,10 +31,13 @@ workers = [
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
     (web_server, 'Web server'),
-    (clapclap, 'Clap clap detector')
+    (clapclap, 'Clap clap detector'),
+    (speech_tests, 'Speech tests')
 ]
 
 logging.debug('Starting threads')
+
+os.exit(0)
 
 threads = []
 for worker, name in workers:
