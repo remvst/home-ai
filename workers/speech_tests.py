@@ -12,7 +12,7 @@ def worker():
         text = phrase.hypothesis().lower()
         logging.debug('Text to speech: {}'.format(text))
 
-        if 'please' not in text:
+        if not text.startswith('please'):
             continue
 
         if not bot.handle_text(text):

@@ -27,7 +27,7 @@ class KikBot(object):
                 SuggestedResponseKeyboard(responses=[
                     TextResponse('Check Running'),
                     TextResponse('Tunnel URL'),
-                    TextResponse('Alarm'),
+                    TextResponse('Alarm Clock'),
                     TextResponse('Restart'),
                     TextResponse('Picture'),
                     TextResponse('Surveillance')
@@ -56,7 +56,7 @@ class KikBot(object):
     def handle_text(self, text):
         text = text.lower()
 
-        if 'alarm' in text or 'clock' in text:
+        if 'alarm' in text and 'clock' in text:
             string = good_morning()
             add_to_queue(string)
             self.send([TextMessage(body='Playing alarm', to=config.KIK_BOT_RECIPIENT_USERNAME)])
