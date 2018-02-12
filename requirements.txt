@@ -15,3 +15,4 @@ Pillow==2.2.1
 numpy==1.13.3
 PeakUtils==1.1.0
 PyAudio==0.2.11
+pocketsphinx==0.1.3
