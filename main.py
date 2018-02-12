@@ -31,7 +31,7 @@ workers = [
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
     (web_server, 'Web server'),
-    (clapclap, 'Clap clap detector'),
+    # (clapclap, 'Clap clap detector'),
     (speech_tests, 'Speech tests')
 ]
 
