@@ -10,6 +10,7 @@ print 'Initialized speech things'
 def worker():
     for phrase in speech:
         text = phrase.hypothesis()
+        print 'GOOOOOOOOOOO'
         print text
 
         if 'please' not in text:
