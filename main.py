@@ -53,6 +53,8 @@ logging.debug('All threads started')
 pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
 
+speech_tests()
+
 # Prevent the main thread from dying
 while threading.active_count() > 0:
     sleep(0.1)
