@@ -1,3 +1,5 @@
+print 'Initializing speech things maybe'
+
 from pocketsphinx import LiveSpeech
 
 from bot.kik_bot import bot
