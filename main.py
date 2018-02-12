@@ -37,8 +37,6 @@ workers = [
 
 logging.debug('Starting threads')
 
-os.exit(0)
-
 threads = []
 for worker, name in workers:
     def crash_handler(exception, description):
