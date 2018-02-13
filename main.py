@@ -108,6 +108,12 @@ voice_response = ResponseSet(responses=[
         command=TextCommand(keywords=['picture']),
         script=take_picture_script,
         output=bot_output
+    ),
+    Response(
+        label='Impress',
+        command=TextCommand(keywords=['impress']),
+        script=StaticTextScript(body='Hey Samantha are you Google? Cause you\'re everything I\'m looking for'),
+        output=speech_output
     )
 ])
 
