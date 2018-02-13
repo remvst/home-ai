@@ -13,6 +13,7 @@ from kik.messages import SuggestedResponseKeyboard, TextResponse
 
 import config
 from bot.kik_bot import KikBotOutput
+from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.good_morning import GoodMorningScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
@@ -52,6 +53,7 @@ web_app = Flask(__name__, static_folder=static_folder)
 # Scripts
 good_morning_script = GoodMorningScript()
 take_picture_script = TakePictureScript(static_folder=static_folder)
+get_tunnel_url_script = GetTunnelURLScript()
 
 # Responders
 bot_response = ResponseSet(responses=[
@@ -65,6 +67,12 @@ bot_response = ResponseSet(responses=[
         label='Picture',
         command=TextCommand(keywords=['picture']),
         script=take_picture_script,
+        output=bot_output
+    ),
+    Response(
+        label='Tunnel URL',
+        command=TextCommand(keywords=['tunnel']),
+        script=get_tunnel_url_script,
         output=bot_output
     ),
     Response(
