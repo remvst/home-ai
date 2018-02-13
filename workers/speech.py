@@ -1,45 +1,58 @@
 import logging
 import os
 import threading
-from time import sleep
 from uuid import uuid4
 
-import config
+from utils.content import TextContent
+from utils.output import Output
 from utils.sound import play_mp3, text_to_speech, pair_speaker
 
 
-queue = []
-lock = threading.Lock()
+class SpeechOutput(Output):
 
-def add_to_queue(string):
-    logging.debug(u'Adding to queue: {}'.format(string))
+    def __init__(self, speaker_mac_address, sink_name, *args, **kwargs):
+        super(SpeechOutput, self).__init__(*args, **kwargs)
+        self.speaker_mac_address = speaker_mac_address
+        self.sink_name = sink_name
 
-    file_path = 'static/speech/{}.mp3'.format(str(uuid4()))
-    text_to_speech(string=string, file_path=file_path)
+        self.queue = []
+        self.lock = threading.Lock()
 
-    logging.debug('Done with text_to_speech')
+    def output(self, contents):
+        string = '.'.join([c.body for c in contents if isinstance(c, TextContent)])
 
-    lock.acquire()
-    queue.append(file_path)
-    lock.release()
+        logging.debug(u'Adding to queue: {}'.format(string))
 
-    logging.debug('Added to queue')
+        file_path = 'static/speech/{}.mp3'.format(str(uuid4()))
+        text_to_speech(string=string, file_path=file_path)
 
-def worker():
-    while True:
-        lock.acquire()
+        logging.debug('Done with text_to_speech')
 
-        try:
-            # Play first item in the queue
-            if len(queue) > 0:
-                play_speech(queue.pop(0))
-        finally:
-            lock.release()
+        self.lock.acquire()
+        self.queue.append(file_path)
+        self.lock.release()
 
-def play_speech(file_path):
-    pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
+        logging.debug('Added to queue')
 
-    play_mp3('assets/speech-announcement.mp3')
-    play_mp3(file_path)
+    def get_worker(self):
+        def worker():
+            while True:
+                self.lock.acquire()
 
-    os.remove(file_path)
+                try:
+                    # Play first item in the queue
+                    if len(self.queue) > 0:
+                        self._play_speech(self.queue.pop(0))
+                finally:
+                    self.lock.release()
+
+        return worker
+
+    def _play_speech(self, file_path):
+        pair_speaker(mac_address=self.speaker_mac_address,
+                     sink_name=self.sink_name)
+
+        play_mp3('assets/speech-announcement.mp3')
+        play_mp3(file_path)
+
+        os.remove(file_path)

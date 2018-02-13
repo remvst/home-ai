@@ -20,7 +20,7 @@ from utils.script import StaticTextScript
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
-# from workers.speech import worker as speech
+from workers.speech import SpeechOutput
 # from workers.speech_tests import worker as speech_tests
 # from workers.surveillance import worker as surveillance
 from workers.web_server import get_worker as generate_web_worker
@@ -42,6 +42,9 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
     ]
 ))
 
+speech_output = SpeechOutput(speaker_mac_address=config.SPEAKER_MAC_ADDRESS,
+                             sink_name=config.SINK_NAME)
+
 static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), '../static')
 web_app = Flask(__name__, static_folder=static_folder)
 
@@ -56,7 +59,7 @@ bot_response_set = ResponseSet(responses=[
         label='Default',
         command=AnyCommand(),
         script=StaticTextScript(body='Unrecognized command'),
-        output=bot_output
+        output=speech_output
     )
 ])
 
@@ -72,6 +75,7 @@ web_server = generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=
                                  recipient_username=config.KIK_BOT_RECIPIENT_USERNAME)
 ngrok_worker = generate_ngrok_worker(port=config.KIK_BOT_PORT, kik=kik)
 alarm_worker = generate_alarm_worker(response=alarm_response)
+speech_worker = speech_output.get_worker()
 
 # workers = [
 #     # (surveillance, 'Surveillance'),
@@ -85,7 +89,8 @@ alarm_worker = generate_alarm_worker(response=alarm_response)
 workers = [
     (web_server, 'Web server'),
     (ngrok_worker, 'ngrok'),
-    (alarm_worker, 'Alarm clock')
+    (alarm_worker, 'Alarm clock'),
+    (speech_worker, 'Speech output')
 ]
 
 logging.debug('Starting threads')
