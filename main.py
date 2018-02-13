@@ -46,7 +46,7 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
 speech_output = SpeechOutput(speaker_mac_address=config.SPEAKER_MAC_ADDRESS,
                              sink_name=config.SINK_NAME)
 
-static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), '../static')
+static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), 'static')
 web_app = Flask(__name__, static_folder=static_folder)
 
 # Scripts
