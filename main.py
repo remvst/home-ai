@@ -112,7 +112,7 @@ alarm_response = Response(
     label='Alarm',
     command=AnyCommand(),
     script=GoodMorningScript(),
-    output=bot_output
+    output=speech_output
 )
 
 # Workers
