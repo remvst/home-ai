@@ -134,9 +134,20 @@ workers = [
 
 logging.debug('Starting threads')
 
+def infinite_worker(worker):
+    while True:
+        try:
+            worker()
+        except Exception as e:
+            logging.exception(e)
+            logging.debug('Restarting thread in 5 seconds')
+            sleep(5)
+        finally:
+            pass
+
 threads = []
 for worker, name in workers:
-    thread = threading.Thread(target=worker, name=name)
+    thread = threading.Thread(target=infinite_worker(worker), name=name)
     thread.daemon = True
     threads.append(thread)
     thread.start()
