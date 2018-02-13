@@ -18,10 +18,10 @@ class KikBotOutput(Output):
             return TextMessage(body=content.body, to=config.KIK_BOT_RECIPIENT_USERNAME)
 
         if isinstance(content, URLContent):
-            return LinkMessage(url=content.url)
+            return LinkMessage(url=content.url, to=config.KIK_BOT_RECIPIENT_USERNAME)
 
         if isinstance(content, PictureURLContent):
-            return PictureMessage(pic_url=content.picture_url)
+            return PictureMessage(pic_url=content.picture_url, to=config.KIK_BOT_RECIPIENT_USERNAME)
 
         raise Exception('Unrecognized content type')
 

@@ -14,6 +14,7 @@ from kik.messages import SuggestedResponseKeyboard, TextResponse
 import config
 from bot.kik_bot import KikBotOutput
 from scripts.good_morning import GoodMorningScript
+from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
 from utils.response import Response, ResponseSet
 from utils.script import StaticTextScript
@@ -31,6 +32,7 @@ if os.geteuid() == 0:
     logging.error('This is not meant to be run as root')
     sys.exit(1)
 
+# Outputs
 kik = KikApi(config.KIK_BOT_USERNAME, config.KIK_BOT_API_KEY)
 bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
     responses=[
@@ -47,18 +49,29 @@ speech_output = SpeechOutput(speaker_mac_address=config.SPEAKER_MAC_ADDRESS,
 static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), '../static')
 web_app = Flask(__name__, static_folder=static_folder)
 
+# Scripts
+good_morning_script = GoodMorningScript()
+take_picture_script = TakePictureScript(static_folder=static_folder)
+
+# Responders
 bot_response = ResponseSet(responses=[
     Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
-        script=GoodMorningScript(),
+        script=good_morning_script,
+        output=bot_output
+    ),
+    Response(
+        label='Picture',
+        command=TextCommand(keywords=['picture']),
+        script=take_picture_script,
         output=bot_output
     ),
     Response(
         label='Default',
         command=AnyCommand(),
         script=StaticTextScript(body='Unrecognized command'),
-        output=speech_output
+        output=bot_output
     )
 ])
 
@@ -66,7 +79,7 @@ voice_response = ResponseSet(responses=[
     Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
-        script=GoodMorningScript(),
+        script=good_morning_script,
         output=speech_output
     )
 ])
@@ -78,6 +91,7 @@ alarm_response = Response(
     output=bot_output
 )
 
+# Workers
 web_server = generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
                                  response_set=bot_response,
                                  recipient_username=config.KIK_BOT_RECIPIENT_USERNAME)
@@ -91,7 +105,7 @@ workers = [
     (ngrok_worker, 'ngrok'),
     (alarm_worker, 'Alarm clock'),
     (speech_worker, 'Speech output'),
-    (voice_worker, 'Voice')
+    # (voice_worker, 'Voice')
 ]
 
 logging.debug('Starting threads')

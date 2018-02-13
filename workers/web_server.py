@@ -29,8 +29,6 @@ def get_worker(web_app, port, kik, response_set, recipient_username):
         json_body = json.loads(raw_body)
         messages = messages_from_json(json_body['messages'])
 
-        print messages
-
         for message in messages:
             if message.from_user != recipient_username:
                 continue

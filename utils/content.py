@@ -15,7 +15,7 @@ class TextContent(Content):
 class URLContent(Content):
 
     def __init__(self, url):
-        super(TextContent, self).__init__()
+        super(URLContent, self).__init__()
         self.url = url
 
     def __str__(self):
@@ -25,7 +25,7 @@ class URLContent(Content):
 class PictureURLContent(Content):
 
     def __init__(self, picture_url):
-        super(TextContent, self).__init__()
+        super(PictureURLContent, self).__init__()
         self.picture_url = picture_url
 
     def __str__(self):
