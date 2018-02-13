@@ -20,3 +20,13 @@ class URLContent(Content):
 
     def __str__(self):
         return self.url
+
+
+class PictureURLContent(Content):
+
+    def __init__(self, picture_url):
+        super(TextContent, self).__init__()
+        self.picture_url = picture_url
+
+    def __str__(self):
+        return self.picture_url

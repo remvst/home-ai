@@ -9,3 +9,6 @@ class Response(object):
 
     def respond(self, input):
         raise Exception('Must implement respond()')
+
+    def maybe_handle(self, input):
+        if not self.command.matches(input):
