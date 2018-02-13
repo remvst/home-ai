@@ -144,15 +144,18 @@ workers = [
 logging.debug('Starting threads')
 
 def infinite_worker(worker):
-    while True:
-        try:
-            worker()
-        except Exception as e:
-            logging.exception(e)
-            logging.debug('Restarting thread in 5 seconds')
-            sleep(5)
-        finally:
-            pass
+    def new_worker():
+        while True:
+            try:
+                worker()
+            except Exception as e:
+                logging.exception(e)
+                logging.debug('Restarting thread in 5 seconds')
+                sleep(5)
+            finally:
+                pass
+
+    return new_worker
 
 threads = []
 for worker, name in workers:
