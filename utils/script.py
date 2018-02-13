@@ -30,9 +30,5 @@ class CompositeScript(Script):
 
 class EchoScript(Script):
 
-    def __init__(self, scripts, *args, **kwargs):
-        super(CompositeScript, self).__init__(*args, **kwargs)
-        self.scripts = scripts
-
     def run(self, input, output):
         output.output([input])
