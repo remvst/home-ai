@@ -8,7 +8,6 @@ from datetime import time
 from time import sleep
 
 import config
-from utils.infinite_thread import InfiniteThread
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import worker as alarm_clock
 from workers.ngrok import worker as ngrok
@@ -37,11 +36,7 @@ logging.debug('Starting threads')
 
 threads = []
 for worker, name in workers:
-    def crash_handler(exception, description):
-        message = 'Thread crashed: {}'.format(description)
-        logging.exception(exception)
-
-    thread = InfiniteThread(target=worker, name=name, crash_handler=crash_handler)
+    thread = threading.Thread(target=worker, name=name)
     thread.daemon = True
     threads.append(thread)
     thread.start()
