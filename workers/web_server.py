@@ -29,16 +29,19 @@ def get_worker(web_app, port, kik, response_set, recipient_username):
         json_body = json.loads(raw_body)
         messages = messages_from_json(json_body['messages'])
 
-        for message in messages:
-            if message.from_user != recipient_username:
-                continue
+        def thread_handler():
+            for message in messages:
+                if message.from_user != recipient_username:
+                    continue
 
-            if not isinstance(message, TextMessage):
-                continue
+                if not isinstance(message, TextMessage):
+                    continue
 
-            content = TextContent(body=message.body)
+                content = TextContent(body=message.body)
 
-            response_set.maybe_handle(content)
+                response_set.maybe_handle(content)
+
+        threading.Thread(target=thread_handler).start()
 
         return '', 200
 
