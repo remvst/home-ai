@@ -8,7 +8,9 @@ from utils.response import ResponseSet
 
 class KikBotOutput(Output):
 
-    def __init__(self, kik, default_keyboard=None):
+    def __init__(self, kik, default_keyboard=None, *args, **kwargs):
+        super(KikBotOutput, self).__init__(*args, **kwargs)
+
         self.kik = kik
 
         self.default_keyboard = default_keyboard
