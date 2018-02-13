@@ -58,6 +58,12 @@ get_tunnel_url_script = GetTunnelURLScript()
 # Responders
 bot_response = ResponseSet(responses=[
     Response(
+        label='Check running',
+        command=TextCommand(keywords=['check']),
+        script=StaticTextScript(body='I am running indeed'),
+        output=speech_output
+    ),
+    Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
         script=good_morning_script,
