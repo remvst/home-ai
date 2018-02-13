@@ -14,10 +14,10 @@ class LogOutput(Output):
             logging.debug(str(content))
 
 
-def MultiOutput(Output):
+class MultiOutput(Output):
 
-    def __init__(self, outputs):
-        super(MultiOutput, self).__init__()
+    def __init__(self, outputs, *args, **kwargs):
+        super(MultiOutput, self).__init__(*args, **kwargs)
         self.outputs = outputs
 
     def output(self, contents):
