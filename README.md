@@ -2,6 +2,7 @@
 
 ```sh
 sudo apt-get install arp-scan
+sudo apt-get install libportaudio0 libportaudio2 libportaudiocpp0 portaudio19-dev
 ```
 
 Make `arp-scan` accessible to your user (potentially unsafe but whatever):
@@ -26,6 +27,10 @@ sudo apt-get install libsmpeg-dev libportmidi-dev libavformat-dev libswscale-dev
 OpenCV dependencies (not sure if necessary):
 ```sh
 sudo apt-get install libopencv-dev python-opencv
+```
+
+```sh
+sudo apt-get install python-scipy
 ```
 
 Webcam:
