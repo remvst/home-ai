@@ -15,7 +15,6 @@ import config
 from bot.kik_bot import KikBotOutput
 from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.good_morning import GoodMorningScript
-from scripts.restart import RestartScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
 from utils.output import MultiOutput
@@ -42,8 +41,7 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
         TextResponse('Check Running'),
         TextResponse('Tunnel URL'),
         TextResponse('Alarm Clock'),
-        TextResponse('Picture'),
-        TextResponse('Restart')
+        TextResponse('Picture')
     ]
 ))
 
@@ -53,12 +51,13 @@ speech_output = SpeechOutput(speaker_mac_address=config.SPEAKER_MAC_ADDRESS,
 static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), 'static')
 web_app = Flask(__name__, static_folder=static_folder)
 
+bot_and_speech_output = MultiOutput(outputs=[speech_output, bot_output])
+
 # Scripts
 good_morning_script = GoodMorningScript()
 take_picture_script = TakePictureScript(static_folder=static_folder)
 get_tunnel_url_script = GetTunnelURLScript()
 running_script = StaticTextScript(body='I am running indeed')
-restart_script = RestartScript()
 
 # Responders
 bot_response = ResponseSet(responses=[
@@ -66,13 +65,7 @@ bot_response = ResponseSet(responses=[
         label='Check running',
         command=TextCommand(keywords=['check']),
         script=running_script,
-        output=speech_output
-    ),
-    Response(
-        label='Restart',
-        command=TextCommand(keywords=['restart']),
-        script=restart_script,
-        output=MultiOutput(outputs=[speech_output, bot_output])
+        output=bot_and_speech_output
     ),
     Response(
         label='Alarm',
@@ -106,6 +99,12 @@ voice_response = ResponseSet(responses=[
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
         script=good_morning_script,
         output=speech_output
+    ),
+    Response(
+        label='Picture',
+        command=TextCommand(keywords=['picture']),
+        script=take_picture_script,
+        output=bot_output
     )
 ])
 
