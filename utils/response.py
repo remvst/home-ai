@@ -12,3 +12,21 @@ class Response(object):
 
     def maybe_handle(self, input):
         if not self.command.matches(input):
+            return False
+
+        self.respond(input)
+        return True
+
+
+def ResponseSet(Response):
+
+    def __init__(self, responses):
+        super(ResponseSet, self).__init__()
+        self.responses = responses
+
+        self.output = KikBotOutput(self.kik)
+
+    def maybe_handle(self, content):
+        for response in self.responses:
+            if response.maybe_handle(content):
+                break
