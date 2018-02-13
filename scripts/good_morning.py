@@ -4,6 +4,8 @@ from plugins.news_summarizer import NewsSummarizer
 from plugins.quote_of_the_day import QuoteOfTheDay
 from plugins.time_announcer import TimeAnnouncer
 from plugins.weather_announcer import WeatherAnnouncer
+from utils.content import TextContent
+from utils.script import Script
 
 
 def generate_string():
@@ -36,3 +38,11 @@ def generate_string():
         'Have an amazing day'
     ]
     return u'.'.join(lines)
+
+
+class GoodMorningScript(Script):
+
+    def run(self, input, output):
+        string = generate_string()
+
+        output.output(TextContent(string))

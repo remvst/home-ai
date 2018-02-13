@@ -1,14 +1,15 @@
 class Response(object):
 
-    def __init__(self, label, command, output):
+    def __init__(self, label, command, script, output):
         super(Response, self).__init__()
 
         self.label = label
         self.command = command
         self.output = output
+        self.script = script
 
     def respond(self, input):
-        raise Exception('Must implement respond()')
+        self.script.run(input, self.output)
 
     def maybe_handle(self, input):
         if not self.command.matches(input):
@@ -18,15 +19,15 @@ class Response(object):
         return True
 
 
-def ResponseSet(Response):
+class ResponseSet(object): # TODO fix inheritance
 
-    def __init__(self, responses):
-        super(ResponseSet, self).__init__()
+    def __init__(self, responses, *args, **kwargs):
+        super(ResponseSet, self).__init__(*args, **kwargs)
         self.responses = responses
-
-        self.output = KikBotOutput(self.kik)
 
     def maybe_handle(self, content):
         for response in self.responses:
             if response.maybe_handle(content):
-                break
+                return True
+
+        return False
