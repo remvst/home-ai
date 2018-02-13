@@ -45,4 +45,4 @@ class GoodMorningScript(Script):
     def run(self, input, output):
         string = generate_string()
 
-        output.output(TextContent(string))
+        output.output([TextContent(string)])
