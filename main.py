@@ -61,7 +61,7 @@ bot_response = ResponseSet(responses=[
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
         script=good_morning_script,
-        output=bot_output
+        output=speech_output
     ),
     Response(
         label='Picture',
