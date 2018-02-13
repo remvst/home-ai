@@ -19,7 +19,7 @@ from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
 from utils.output import MultiOutput
 from utils.response import Response, ResponseSet
-from utils.script import StaticTextScript
+from utils.script import CompositeScript, EchoScript, StaticTextScript
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
@@ -88,7 +88,10 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Default',
         command=AnyCommand(),
-        script=StaticTextScript(body='Unrecognized command'),
+        script=CompositeScript(scripts=[
+            StaticTextScript(body='Unrecognized command'),
+            EchoScript()
+        ])
         output=bot_output
     )
 ])
