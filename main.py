@@ -91,7 +91,7 @@ bot_response = ResponseSet(responses=[
         script=CompositeScript(scripts=[
             StaticTextScript(body='Unrecognized command'),
             EchoScript()
-        ])
+        ]),
         output=bot_output
     )
 ])
