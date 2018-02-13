@@ -1,7 +1,20 @@
+from utils.content import TextContent
+
+
 class Script(object):
 
     def run(self, input, output):
         raise Exception('Must implement run() method')
+
+
+class StaticTextScript(object):
+
+    def __init__(self, body, *args, **kwargs):
+        super(StaticTextScript, self).__init__(*args, **kwargs)
+        self.body = body
+
+    def run(self, input, output):
+        output.output([TextContent(body=self.body)])
 
 
 class CompositeScript(Script):

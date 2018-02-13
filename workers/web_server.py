@@ -5,18 +5,18 @@ import threading
 
 from flask import request
 from kik import Configuration
-from kik.messages import messages_from_json
+from kik.messages import TextMessage, messages_from_json
 from werkzeug.serving import run_simple
 
-import config
+from utils.content import TextContent
 
-def get_worker(web_app, kik, response_set):
+def get_worker(web_app, port, kik, response_set, recipient_username):
 
     def update_config():
         kik.set_configuration(Configuration(webhook=webhook))
 
     def worker():
-        run_simple('localhost', config.KIK_BOT_PORT, web_app)
+        run_simple('localhost', port, web_app)
 
     @web_app.route('/', methods=['POST'])
     def incoming_messages():
@@ -29,14 +29,18 @@ def get_worker(web_app, kik, response_set):
         json_body = json.loads(raw_body)
         messages = messages_from_json(json_body['messages'])
 
+        print messages
+
         for message in messages:
-            if message.from_user != config.KIK_BOT_RECIPIENT_USERNAME:
+            if message.from_user != recipient_username:
                 continue
 
             if not isinstance(message, TextMessage):
                 continue
 
             content = TextContent(body=message.body)
+
+            response_set.maybe_handle(content)
 
         return '', 200
 

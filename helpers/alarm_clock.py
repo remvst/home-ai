@@ -17,8 +17,6 @@ class AlarmClock(object):
 
         self.settings = deque(settings)
 
-        self.ring_handler = None
-
         now = datetime.now()
         current_day_of_week = now.weekday()
 
@@ -49,13 +47,13 @@ class AlarmClock(object):
         current_day_of_week = now.weekday()
 
         if current_day_of_week != current_setting.weekday:
-            return
+            return False
 
         ring_time = datetime.combine(date.today(), current_setting.time)
 
         if now < ring_time:
-            return
+            return False
 
         self.rotate()
-        if self.ring_handler is not None:
-            self.ring_handler()
+
+        return True

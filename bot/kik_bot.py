@@ -8,8 +8,10 @@ from utils.response import ResponseSet
 
 class KikBotOutput(Output):
 
-    def __init__(self, kik):
+    def __init__(self, kik, default_keyboard=None):
         self.kik = kik
+
+        self.default_keyboard = default_keyboard
 
     def content_to_message(self, content):
         if isinstance(content, TextContent):
@@ -26,37 +28,11 @@ class KikBotOutput(Output):
     def output(self, contents):
         messages = [self.content_to_message(content) for content in contents]
 
-        keyboard = self._default_keyboard()
-
         for message in messages:
-            message.keyboards = [keyboard]
+            message.keyboards = [self.default_keyboard]
 
         self.kik.send_messages(messages)
-
-    def _default_keyboard(self):
-        responses = [r.label for r in self.responses]
-        return SuggestedResponseKeyboard(responses=responses)
 
     def update_config(self, webhook):
         self.config.webhook = webhook
         self.kik.set_configuration(self.config)
-
-
-class KikBot(Output):
-
-    def __init__(self, *args, **kwargs):
-        super(KikBot, self).__init__(*args, **kwargs)
-
-        self.kik = KikApi(config.KIK_BOT_USERNAME, config.KIK_BOT_API_KEY)
-        self.config = Configuration(webhook=None)
-
-    def handle_messages(self, messages):
-        for message in messages:
-            if message.from_user != config.KIK_BOT_RECIPIENT_USERNAME:
-                continue
-
-            if not isinstance(message, TextMessage):
-                continue
-
-            content = TextContent(body=message.body)
-            self.maybe_handle(content)

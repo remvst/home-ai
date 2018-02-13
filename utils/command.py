@@ -7,6 +7,12 @@ class Command(object):
         raise Exception('Must implement matches() method')
 
 
+class AnyCommand(object):
+
+    def matches(self, input):
+        return True
+
+
 class TextCommand(Command):
 
     def __init__(self, keywords):

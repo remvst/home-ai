@@ -9,15 +9,17 @@ from time import sleep
 
 from flask import Flask
 from kik import KikApi
+from kik.messages import SuggestedResponseKeyboard, TextResponse
 
 import config
 from bot.kik_bot import KikBotOutput
 from scripts.good_morning import GoodMorningScript
-from utils.command import TextCommand
+from utils.command import AnyCommand, TextCommand
 from utils.response import Response, ResponseSet
+from utils.script import StaticTextScript
 from utils.sound import play_mp3, pair_speaker
-# from workers.alarm_clock import worker as alarm_clock
-# from workers.ngrok import worker as ngrok
+from workers.alarm_clock import get_worker as generate_alarm_worker
+from workers.ngrok import get_worker as generate_ngrok_worker
 # from workers.speech import worker as speech
 # from workers.speech_tests import worker as speech_tests
 # from workers.surveillance import worker as surveillance
@@ -31,7 +33,14 @@ if os.geteuid() == 0:
     sys.exit(1)
 
 kik = KikApi(config.KIK_BOT_USERNAME, config.KIK_BOT_API_KEY)
-bot_output = KikBotOutput(kik=kik)
+bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
+    responses=[
+        TextResponse('Check Running'),
+        TextResponse('Tunnel URL'),
+        TextResponse('Alarm Clock'),
+        TextResponse('Picture')
+    ]
+))
 
 static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), '../static')
 web_app = Flask(__name__, static_folder=static_folder)
@@ -42,14 +51,27 @@ bot_response_set = ResponseSet(responses=[
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
         script=GoodMorningScript(),
         output=bot_output
+    ),
+    Response(
+        label='Default',
+        command=AnyCommand(),
+        script=StaticTextScript(body='Unrecognized command'),
+        output=bot_output
     )
 ])
 
-web_server = generate_web_worker(
-    web_app=web_app,
-    kik=kik,
-    response_set=bot_response_set
+alarm_response = Response(
+    label='Alarm',
+    command=AnyCommand(),
+    script=GoodMorningScript(),
+    output=bot_output
 )
+
+web_server = generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
+                                 response_set=bot_response_set,
+                                 recipient_username=config.KIK_BOT_RECIPIENT_USERNAME)
+ngrok_worker = generate_ngrok_worker(port=config.KIK_BOT_PORT, kik=kik)
+alarm_worker = generate_alarm_worker(response=alarm_response)
 
 # workers = [
 #     # (surveillance, 'Surveillance'),
@@ -61,7 +83,9 @@ web_server = generate_web_worker(
 # ]
 
 workers = [
-    (web_server, 'Web server')
+    (web_server, 'Web server'),
+    (ngrok_worker, 'ngrok'),
+    (alarm_worker, 'Alarm clock')
 ]
 
 logging.debug('Starting threads')

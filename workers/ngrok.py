@@ -1,29 +1,33 @@
 import logging
-import subprocess
 import threading
-from time import sleep
 
-import config
-from bot.kik_bot import bot
+from kik import Configuration
+
 from utils.ngrok import run_ngrok, get_ngrok_url
 
-def worker():
-    thread = threading.Thread(target=notify_ngrok_worker)
-    thread.start()
+def get_worker(port, kik):
 
-    run_ngrok(port=config.KIK_BOT_PORT)
+    def worker():
+        while True:
+            thread = threading.Thread(target=notify_ngrok_worker)
+            thread.start()
+
+            try:
+                run_ngrok(port=port)
+            except:
+                pass
 
 
-def notify_ngrok_worker():
-    while True:
-        sleep(2) # Wait a little bit just so ngrok can start
+    def notify_ngrok_worker():
+        while True:
+            try:
+                ngrok_url = get_ngrok_url()
+                break
+            except Exception as e:
+                continue
 
-        try:
-            ngrok_url = get_ngrok_url()
-        except Exception as e:
-            logging.exception(e)
-            continue
+        logging.debug('ngrok available at {}'.format(ngrok_url))
 
-        break
+        kik.set_configuration(Configuration(webhook=ngrok_url))
 
-    bot.update_config(webhook=ngrok_url)
+    return worker
