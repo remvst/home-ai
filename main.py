@@ -15,8 +15,10 @@ import config
 from bot.kik_bot import KikBotOutput
 from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.good_morning import GoodMorningScript
+from scripts.restart import RestartScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
+from utils.output import MultiOutput
 from utils.response import Response, ResponseSet
 from utils.script import StaticTextScript
 from utils.sound import play_mp3, pair_speaker
@@ -40,7 +42,8 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
         TextResponse('Check Running'),
         TextResponse('Tunnel URL'),
         TextResponse('Alarm Clock'),
-        TextResponse('Picture')
+        TextResponse('Picture'),
+        TextResponse('Restart')
     ]
 ))
 
@@ -54,14 +57,22 @@ web_app = Flask(__name__, static_folder=static_folder)
 good_morning_script = GoodMorningScript()
 take_picture_script = TakePictureScript(static_folder=static_folder)
 get_tunnel_url_script = GetTunnelURLScript()
+running_script = StaticTextScript(body='I am running indeed')
+restart_script = RestartScript()
 
 # Responders
 bot_response = ResponseSet(responses=[
     Response(
         label='Check running',
         command=TextCommand(keywords=['check']),
-        script=StaticTextScript(body='I am running indeed'),
+        script=running_script,
         output=speech_output
+    ),
+    Response(
+        label='Restart',
+        command=TextCommand(keywords=['restart']),
+        script=restart_script,
+        output=MultiOutput(outputs=[speech_output, bot_output])
     ),
     Response(
         label='Alarm',

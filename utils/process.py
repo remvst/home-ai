@@ -1,5 +1,4 @@
 import os
-import psutil
 import sys
 
 def restart_process():
