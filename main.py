@@ -11,7 +11,6 @@ import config
 from utils.infinite_thread import InfiniteThread
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import worker as alarm_clock
-from workers.clapclap import worker as clapclap
 from workers.ngrok import worker as ngrok
 from workers.web_server import worker as web_server
 from workers.speech import worker as speech
@@ -31,7 +30,6 @@ workers = [
     (speech, 'Speech queue'),
     (ngrok, 'ngrok'),
     (web_server, 'Web server'),
-    # (clapclap, 'Clap clap detector'),
     (speech_tests, 'Speech tests')
 ]
 
