@@ -8,12 +8,11 @@ def infinite_worker(worker):
         while True:
             try:
                 worker(*args)
-            except KeyboardInterrupt:
                 return
+            except KeyboardInterrupt:
+                raise
             except Exception as e:
                 logging.exception(e)
                 sleep(1)
-            finally:
-                pass
 
     return _worker
