@@ -22,8 +22,9 @@ def get_workers(response, prefix):
                             audio_device='0')
 
         for phrase in speech:
-            logging.debug(u'Voice input added: {}'.format(phrase))
+            logging.debug(u'Voice input adding: {}'.format(phrase))
             queue.put(phrase.hypothesis())
+            logging.debug(u'Voice input added: {}'.format(phrase))
 
     def process_phrase_worker(phrase):
         def worker():
@@ -41,7 +42,10 @@ def get_workers(response, prefix):
 
     def processing_worker():
         while True:
+            logging.debug('Getting from queue')
             phrase = queue.get()
+            logging.debug('Got from queue: {}'.format(phrase))
+
             if phrase is None or len(phrase) == 0:
                 continue
 
