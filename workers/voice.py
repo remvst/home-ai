@@ -29,7 +29,7 @@ def get_workers(response, prefix):
             logging.debug(u'Voice input: {}'.format(phrase))
 
             if not phrase.startswith(prefix):
-                continue
+                return
 
             play_mp3('assets/speech-detected.mp3')
 
