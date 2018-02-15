@@ -24,25 +24,28 @@ def get_workers(response, prefix):
         for phrase in speech:
             queue.put(phrase.hypothesis())
 
-    def processing_worker():
-        while True:
-            sleep(0.5)
-
-            phrase = queue.get()
-            if phrase is None or len(phrase) == 0:
-                continue
-
-            text = phrase.lower()
-
+    def process_phrase_worker(phrase):
+        def worker():
             logging.debug(u'Voice input: {}'.format(phrase))
 
-            if not text.startswith(prefix):
+            if not phrase.startswith(prefix):
                 continue
 
             play_mp3('assets/speech-detected.mp3')
 
-            if not response.maybe_handle(TextContent(body=text)):
+            if not response.maybe_handle(TextContent(body=phrase)):
                 play_mp3('assets/error.mp3')
+
+        return worker
+
+    def processing_worker():
+        while True:
+            phrase = queue.get()
+            if phrase is None or len(phrase) == 0:
+                continue
+
+            # Handling this phrase in a separate thread so we can keep keep processing the next one
+            Thread(target=processing_worker(text.lower()), name='Phrase processing').start()
 
     return (Process(target=infinite_worker(input_worker), name='Voice input', args=[queue]),
         Thread(target=infinite_worker(processing_worker), name='Voice processing'))
