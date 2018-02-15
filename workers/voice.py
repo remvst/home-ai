@@ -1,6 +1,5 @@
 import logging
 from multiprocessing import Process, Queue
-from Queue import Empty
 from threading import Thread
 from time import sleep
 
@@ -44,12 +43,7 @@ def get_workers(response, prefix):
     def processing_worker():
         while True:
             logging.debug('Getting from queue')
-
-            try:
-                phrase = queue.get_nowait()
-            except Empty:
-                continue
-
+            phrase = queue.get()
             logging.debug('Got from queue: {}'.format(phrase))
 
             if phrase is None or len(phrase) == 0:
