@@ -140,7 +140,6 @@ threads = [
 ]
 
 for thread in threads:
-    thread.daemon = True
     thread.start()
 
 logging.debug('All threads started')
@@ -151,6 +150,5 @@ voice_input_process.start()
 pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
 
-# Prevent the main thread from dying
-while threading.active_count() > 0:
-    sleep(0.1)
+for thread in threads:
+    thread.join()
