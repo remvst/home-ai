@@ -17,6 +17,7 @@ from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.good_morning import GoodMorningScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
+from utils.infinite_thread import infinite_thread
 from utils.output import MultiOutput
 from utils.response import Response, ResponseSet
 from utils.script import CompositeScript, EchoScript, StaticTextScript
@@ -138,35 +139,20 @@ workers = [
     (ngrok_worker, 'ngrok'),
     (alarm_worker, 'Alarm clock'),
     (speech_worker, 'Speech output'),
-    (voice_worker, 'Voice')
+    # (voice_worker, 'Voice')
 ]
 
 logging.debug('Starting threads')
 
-def infinite_worker(worker):
-    def new_worker():
-        while True:
-            try:
-                worker()
-            except Exception as e:
-                logging.exception(e)
-                logging.debug('Restarting thread in 5 seconds')
-                sleep(5)
-            finally:
-                pass
-
-    return new_worker
-
 threads = []
 for worker, name in workers:
-    thread = threading.Thread(target=infinite_worker(worker), name=name)
-    thread.daemon = True
+    thread = infinite_thread(worker, name)
     threads.append(thread)
     thread.start()
 
 logging.debug('All threads started')
 
-pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
+# pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
 
 # Prevent the main thread from dying
