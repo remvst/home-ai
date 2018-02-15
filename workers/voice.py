@@ -22,6 +22,7 @@ def get_workers(response, prefix):
                             audio_device='0')
 
         for phrase in speech:
+            logging.debug(u'Voice input added: {}'.format(phrase))
             queue.put(phrase.hypothesis())
 
     def process_phrase_worker(phrase):
