@@ -14,6 +14,8 @@ def get_worker(port, kik):
 
             try:
                 run_ngrok(port=port)
+            except KeyboardInterrupt:
+                raise
             except:
                 pass
 
@@ -23,6 +25,8 @@ def get_worker(port, kik):
             try:
                 ngrok_url = get_ngrok_url()
                 break
+            except KeyboardInterrupt:
+                raise
             except Exception as e:
                 continue
 
