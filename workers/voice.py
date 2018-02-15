@@ -45,7 +45,7 @@ def get_workers(response, prefix):
                 continue
 
             # Handling this phrase in a separate thread so we can keep keep processing the next one
-            Thread(target=processing_worker(text.lower()), name='Phrase processing').start()
+            Thread(target=processing_worker(phrase.lower()), name='Phrase processing').start()
 
     return (Process(target=infinite_worker(input_worker), name='Voice input', args=[queue]),
         Thread(target=infinite_worker(processing_worker), name='Voice processing'))
