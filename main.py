@@ -139,7 +139,7 @@ workers = [
     (ngrok_worker, 'ngrok'),
     (alarm_worker, 'Alarm clock'),
     (speech_worker, 'Speech output'),
-    # (voice_worker, 'Voice')
+    (voice_worker, 'Voice')
 ]
 
 logging.debug('Starting threads')
