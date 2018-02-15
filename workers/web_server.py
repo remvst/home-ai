@@ -12,9 +12,6 @@ from utils.content import TextContent
 
 def get_worker(web_app, port, kik, response_set, recipient_username):
 
-    def update_config():
-        kik.set_configuration(Configuration(webhook=webhook))
-
     def worker():
         run_simple('localhost', port, web_app)
 
