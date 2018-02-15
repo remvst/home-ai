@@ -4,6 +4,7 @@ from threading import Thread, Lock
 from uuid import uuid4
 
 from utils.content import TextContent
+from utils.infinite_worker import infinite_worker
 from utils.output import Output
 from utils.sound import play_mp3, text_to_speech, pair_speaker
 
@@ -46,7 +47,7 @@ class SpeechOutput(Output):
                 finally:
                     self.lock.release()
 
-        return Thread(target=worker, name='Speech output')
+        return Thread(target=infinite_worker(worker), name='Speech output')
 
     def _play_speech(self, file_path):
         pair_speaker(mac_address=self.speaker_mac_address,

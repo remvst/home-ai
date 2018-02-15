@@ -5,6 +5,7 @@ from time import sleep
 
 from helpers.alarm_clock import AlarmClock, AlarmClockSetting
 from utils.content import Content
+from utils.infinite_worker import infinite_worker
 
 
 def get_worker(response):
@@ -28,4 +29,4 @@ def get_worker(response):
 
             response.maybe_handle(Content())
 
-    return Thread(target=worker, name='Alarm clock')
+    return Thread(target=infinite_worker(worker), name='Alarm clock')

@@ -6,6 +6,7 @@ from time import sleep
 from pocketsphinx import LiveSpeech
 
 from utils.content import TextContent
+from utils.infinite_worker import infinite_worker
 from utils.sound import play_mp3
 
 
@@ -43,5 +44,5 @@ def get_workers(response, prefix):
             if not response.maybe_handle(TextContent(body=text)):
                 play_mp3('assets/error.mp3')
 
-    return (Process(target=input_worker, name='Voice input', args=[queue]),
-        Thread(target=processing_worker, name='Voice processing'))
+    return (Process(target=infinite_worker(input_worker), name='Voice input', args=[queue]),
+        Thread(target=infinite_worker(processing_worker), name='Voice processing'))

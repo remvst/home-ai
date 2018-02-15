@@ -9,6 +9,8 @@ from kik.messages import TextMessage, messages_from_json
 from werkzeug.serving import run_simple
 
 from utils.content import TextContent
+from utils.infinite_worker import infinite_worker
+
 
 def get_worker(web_app, port, kik, response_set, recipient_username):
 
@@ -45,4 +47,4 @@ def get_worker(web_app, port, kik, response_set, recipient_username):
 
         return '', 200
 
-    return Thread(target=worker, name='Web server')
+    return Thread(target=infinite_worker(worker), name='Web server')

@@ -3,6 +3,7 @@ from threading import Thread
 
 from kik import Configuration
 
+from utils.infinite_worker import infinite_worker
 from utils.ngrok import run_ngrok, get_ngrok_url
 
 def get_worker(port, kik):
@@ -34,4 +35,4 @@ def get_worker(port, kik):
 
         kik.set_configuration(Configuration(webhook=ngrok_url))
 
-    return Thread(target=worker, name='ngrok')
+    return Thread(target=infinite_worker(worker), name='ngrok')
