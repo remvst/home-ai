@@ -43,7 +43,12 @@ def get_workers(response, prefix):
     def processing_worker():
         while True:
             logging.debug('Getting from queue')
-            phrase = queue.get()
+
+            try:
+                phrase = queue.get_nowait()
+            except Queue.Empty:
+                continue
+
             logging.debug('Got from queue: {}'.format(phrase))
 
             if phrase is None or len(phrase) == 0:
