@@ -42,7 +42,7 @@ class SpeechOutput(Output):
 
                     # Play first item in the queue
                     if len(self.queue) > 0:
-                        self._play_speech(queue.pop(0))
+                        self._play_speech(self.queue.pop(0))
                 finally:
                     self.lock.release()
 
