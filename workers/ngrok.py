@@ -22,14 +22,7 @@ def get_worker(port, kik):
 
 
     def notify_ngrok_worker():
-        while True:
-            try:
-                ngrok_url = get_ngrok_url()
-                break
-            except KeyboardInterrupt:
-                raise
-            except Exception as e:
-                continue
+        ngrok_url = get_ngrok_url()
 
         logging.debug('ngrok available at {}'.format(ngrok_url))
 
