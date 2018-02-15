@@ -4,10 +4,10 @@ from time import sleep
 
 def infinite_worker(worker):
 
-    def _worker():
+    def _worker(*args):
         while True:
             try:
-                worker()
+                worker(*args)
             except KeyboardInterrupt:
                 return
             except Exception as e:
