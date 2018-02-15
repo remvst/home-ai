@@ -7,7 +7,7 @@ def infinite_worker(worker):
     def _worker():
         while True:
             try:
-                worker(*args)
+                worker()
             except KeyboardInterrupt:
                 return
             except Exception as e:
