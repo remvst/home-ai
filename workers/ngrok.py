@@ -9,16 +9,10 @@ from utils.ngrok import run_ngrok, get_ngrok_url
 def get_worker(port, kik):
 
     def worker():
-        while True:
-            thread = Thread(target=notify_ngrok_worker)
-            thread.start()
+        thread = Thread(target=notify_ngrok_worker)
+        thread.start()
 
-            try:
-                run_ngrok(port=port)
-            except KeyboardInterrupt:
-                raise
-            except:
-                pass
+        run_ngrok(port=port)
 
 
     def notify_ngrok_worker():
