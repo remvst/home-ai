@@ -1,5 +1,6 @@
 import logging
 from threading import Thread
+from time import sleep
 
 from kik import Configuration
 
@@ -16,7 +17,15 @@ def get_worker(port, kik):
 
 
     def notify_ngrok_worker():
-        ngrok_url = get_ngrok_url()
+        while True:
+            try:
+                sleep(1)
+                ngrok_url = get_ngrok_url()
+                break
+            except KeyboardInterrupt:
+                raise
+            except Exception:
+                continue
 
         logging.debug('ngrok available at {}'.format(ngrok_url))
 
