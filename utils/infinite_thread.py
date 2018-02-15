@@ -1,12 +1,15 @@
 import logging
-import threading
+from threading import Thread
 from time import sleep
 
-def infinite_thread(worker, name):
-    def infinite_worker():
+def infinite_thread(worker, name, args=()):
+
+    def infinite_worker(*args):
         while True:
             try:
-                worker()
+                worker(*args)
+            except KeyboardInterrupt:
+                return
             except Exception as e:
                 logging.error(u'Worker {} crashed'.format(name))
                 logging.exception(e)
@@ -14,7 +17,4 @@ def infinite_thread(worker, name):
             finally:
                 pass
 
-    thread = threading.Thread(target=infinite_worker, name=name)
-    thread.daemon = True
-
-    return thread
+    return Thread(target=infinite_worker, name=name, args=args)

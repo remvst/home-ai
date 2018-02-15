@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-import threading
+from threading import Thread
 
 from flask import request
 from kik import Configuration
@@ -15,6 +15,18 @@ def get_worker(web_app, port, kik, response_set, recipient_username):
     def worker():
         run_simple('localhost', port, web_app)
 
+    def messages_handler(messages):
+        for message in messages:
+            if message.from_user != recipient_username:
+                continue
+
+            if not isinstance(message, TextMessage):
+                continue
+
+            content = TextContent(body=message.body)
+
+            response_set.maybe_handle(content)
+
     @web_app.route('/', methods=['POST'])
     def incoming_messages():
         signature = request.headers.get('X-Kik-Signature')
@@ -26,20 +38,11 @@ def get_worker(web_app, port, kik, response_set, recipient_username):
         json_body = json.loads(raw_body)
         messages = messages_from_json(json_body['messages'])
 
-        def thread_handler():
-            for message in messages:
-                if message.from_user != recipient_username:
-                    continue
+        logging.debug(messages)
 
-                if not isinstance(message, TextMessage):
-                    continue
-
-                content = TextContent(body=message.body)
-
-                response_set.maybe_handle(content)
-
-        threading.Thread(target=thread_handler).start()
+        # Handle the message in a different thread so we can return a 200 right away
+        Thread(target=messages_handler, args=[messages]).start()
 
         return '', 200
 
-    return worker
+    return Thread(target=worker, name='Web server')

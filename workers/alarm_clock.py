@@ -1,5 +1,6 @@
 import logging
 from datetime import time
+from threading import Thread
 from time import sleep
 
 from helpers.alarm_clock import AlarmClock, AlarmClockSetting
@@ -19,10 +20,12 @@ def get_worker(response):
 
     def worker():
         while True:
+            logging.debug('Alarm clock')
+
             if not alarm_clock.check():
                 sleep(5)
                 continue
 
             response.maybe_handle(Content())
 
-    return worker
+    return Thread(target=worker, name='Alarm clock')

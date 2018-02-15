@@ -1,5 +1,5 @@
 import logging
-import threading
+from threading import Thread
 
 from kik import Configuration
 
@@ -9,7 +9,7 @@ def get_worker(port, kik):
 
     def worker():
         while True:
-            thread = threading.Thread(target=notify_ngrok_worker)
+            thread = Thread(target=notify_ngrok_worker)
             thread.start()
 
             try:
@@ -30,4 +30,4 @@ def get_worker(port, kik):
 
         kik.set_configuration(Configuration(webhook=ngrok_url))
 
-    return worker
+    return Thread(target=worker, name='ngrok')

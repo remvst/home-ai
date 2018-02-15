@@ -1,6 +1,6 @@
 import logging
 import os
-import threading
+from threading import Thread, Lock
 from uuid import uuid4
 
 from utils.content import TextContent
@@ -14,9 +14,8 @@ class SpeechOutput(Output):
         super(SpeechOutput, self).__init__(*args, **kwargs)
         self.speaker_mac_address = speaker_mac_address
         self.sink_name = sink_name
-
         self.queue = []
-        self.lock = threading.Lock()
+        self.lock = Lock()
 
     def output(self, contents):
         string = '.'.join([c.body for c in contents if isinstance(c, TextContent)])
@@ -35,18 +34,19 @@ class SpeechOutput(Output):
         logging.debug('Added to queue')
 
     def get_worker(self):
+
         def worker():
             while True:
-                self.lock.acquire()
-
                 try:
+                    self.lock.acquire()
+
                     # Play first item in the queue
                     if len(self.queue) > 0:
-                        self._play_speech(self.queue.pop(0))
+                        self._play_speech(queue.pop(0))
                 finally:
                     self.lock.release()
 
-        return worker
+        return Thread(target=worker, name='Speech output')
 
     def _play_speech(self, file_path):
         pair_speaker(mac_address=self.speaker_mac_address,

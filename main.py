@@ -17,7 +17,6 @@ from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.good_morning import GoodMorningScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
-from utils.infinite_thread import infinite_thread
 from utils.output import MultiOutput
 from utils.response import Response, ResponseSet
 from utils.script import CompositeScript, EchoScript, StaticTextScript
@@ -25,7 +24,7 @@ from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
 from workers.speech import SpeechOutput
-from workers.voice import get_worker as generate_voice_worker
+from workers.voice import get_workers as generate_voice_workers
 from workers.web_server import get_worker as generate_web_worker
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -126,31 +125,28 @@ alarm_response = Response(
 )
 
 # Workers
-web_server = generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
-                                 response_set=bot_response,
-                                 recipient_username=config.KIK_BOT_RECIPIENT_USERNAME)
-ngrok_worker = generate_ngrok_worker(port=config.KIK_BOT_PORT, kik=kik)
-alarm_worker = generate_alarm_worker(response=alarm_response)
-speech_worker = speech_output.get_worker()
-voice_worker = generate_voice_worker(prefix='please', response=voice_response)
-
-workers = [
-    (web_server, 'Web server'),
-    (ngrok_worker, 'ngrok'),
-    (alarm_worker, 'Alarm clock'),
-    (speech_worker, 'Speech output'),
-    (voice_worker, 'Voice')
-]
-
 logging.debug('Starting threads')
 
-threads = []
-for worker, name in workers:
-    thread = infinite_thread(worker, name)
-    threads.append(thread)
+voice_input_process, voice_processing_thread = generate_voice_workers(prefix='please', response=voice_response)
+
+threads = [
+    generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
+                        response_set=bot_response,
+                        recipient_username=config.KIK_BOT_RECIPIENT_USERNAME),
+    generate_ngrok_worker(port=config.KIK_BOT_PORT, kik=kik),
+    generate_alarm_worker(response=alarm_response),
+    speech_output.get_worker(),
+    voice_processing_thread
+]
+
+for thread in threads:
+    thread.daemon = True
     thread.start()
 
 logging.debug('All threads started')
+
+# Starting voice input process
+voice_input_process.start()
 
 pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
