@@ -1,6 +1,6 @@
 import logging
 import os
-from threading import Thread, Lock
+from threading import Thread
 from uuid import uuid4
 
 from utils.content import TextContent
@@ -17,7 +17,6 @@ class SpeechOutput(Output):
         self.speaker_mac_address = speaker_mac_address
         self.sink_name = sink_name
         self.queue = []
-        self.lock = Lock()
 
         self.start_speech_callback = None
         self.end_speech_callback = None
@@ -32,9 +31,7 @@ class SpeechOutput(Output):
 
         logging.debug('Done with text_to_speech')
 
-        self.lock.acquire()
         self.queue.append(file_path)
-        self.lock.release()
 
         logging.debug('Added to queue')
 
@@ -42,14 +39,9 @@ class SpeechOutput(Output):
 
         def worker():
             while True:
-                try:
-                    self.lock.acquire()
-
-                    # Play first item in the queue
-                    if len(self.queue) > 0:
-                        self._play_speech(self.queue.pop(0))
-                finally:
-                    self.lock.release()
+                # Play first item in the queue
+                if len(self.queue) > 0:
+                    self._play_speech(self.queue.pop(0))
 
         return Thread(target=infinite_worker(worker), name='Speech output')
 
