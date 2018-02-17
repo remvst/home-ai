@@ -3,7 +3,7 @@ import logging
 
 class Output(object):
 
-    def output(self):
+    def output(self, contents):
         pass
 
 
@@ -16,8 +16,8 @@ class LogOutput(Output):
 
 class MultiOutput(Output):
 
-    def __init__(self, outputs, *args, **kwargs):
-        super(MultiOutput, self).__init__(*args, **kwargs)
+    def __init__(self, outputs):
+        super(MultiOutput, self).__init__()
         self.outputs = outputs
 
     def output(self, contents):

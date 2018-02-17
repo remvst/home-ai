@@ -1,6 +1,6 @@
 import logging
-from threading import Thread
 from time import sleep
+
 
 def infinite_worker(worker):
 

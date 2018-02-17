@@ -7,6 +7,7 @@ from kik import Configuration
 from utils.infinite_worker import infinite_worker
 from utils.ngrok import run_ngrok, get_ngrok_url
 
+
 def get_worker(port, kik):
 
     def worker():
@@ -14,7 +15,6 @@ def get_worker(port, kik):
         thread.start()
 
         run_ngrok(port=port)
-
 
     def notify_ngrok_worker():
         while True:
@@ -24,7 +24,7 @@ def get_worker(port, kik):
                 break
             except KeyboardInterrupt:
                 raise
-            except Exception:
+            except KeyError:
                 continue
 
         logging.debug('ngrok available at {}'.format(ngrok_url))

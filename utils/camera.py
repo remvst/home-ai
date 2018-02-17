@@ -1,6 +1,7 @@
 import logging
 import subprocess
 
+
 def take_picture(destination, skip=2, resolution=(1280, 720)):
     logging.debug('Taking picture')
     subprocess.check_output([

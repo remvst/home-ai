@@ -16,3 +16,4 @@ numpy==1.13.3
 PeakUtils==1.1.0
 PyAudio==0.2.11
 pocketsphinx==0.1.3
+httplib2==0.10.3

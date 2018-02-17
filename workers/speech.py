@@ -11,12 +11,16 @@ from utils.sound import play_mp3, text_to_speech, pair_speaker
 
 class SpeechOutput(Output):
 
-    def __init__(self, speaker_mac_address, sink_name, *args, **kwargs):
-        super(SpeechOutput, self).__init__(*args, **kwargs)
+    def __init__(self, speaker_mac_address, sink_name):
+        super(SpeechOutput, self).__init__()
+
         self.speaker_mac_address = speaker_mac_address
         self.sink_name = sink_name
         self.queue = []
         self.lock = Lock()
+
+        self.start_speech_callback = None
+        self.end_speech_callback = None
 
     def output(self, contents):
         string = '.'.join([c.body for c in contents if isinstance(c, TextContent)])
@@ -50,10 +54,15 @@ class SpeechOutput(Output):
         return Thread(target=infinite_worker(worker), name='Speech output')
 
     def _play_speech(self, file_path):
-        pair_speaker(mac_address=self.speaker_mac_address,
-                     sink_name=self.sink_name)
+        if self.start_speech_callback:
+            self.start_speech_callback()
+
+        pair_speaker(mac_address=self.speaker_mac_address, sink_name=self.sink_name)
 
         play_mp3('assets/speech-announcement.mp3')
         play_mp3(file_path)
 
         os.remove(file_path)
+
+        if self.end_speech_callback:
+            self.end_speech_callback()

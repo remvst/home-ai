@@ -1,11 +1,6 @@
 import logging
 import os
-import StringIO
-import subprocess
 import sys
-import threading
-from datetime import time
-from time import sleep
 
 from flask import Flask
 from kik import KikApi
@@ -24,7 +19,7 @@ from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
 from workers.speech import SpeechOutput
-from workers.voice import get_workers as generate_voice_workers
+from workers.voice import VoiceProcessor
 from workers.web_server import get_worker as generate_web_worker
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -127,7 +122,9 @@ alarm_response = Response(
 # Workers
 logging.debug('Starting threads')
 
-voice_input_process, voice_processing_thread = generate_voice_workers(prefix='please', response=voice_response)
+voice_processor = VoiceProcessor(prefix='please', response=voice_response)
+speech_output.start_speech_callback = voice_processor.pause_processing
+speech_output.end_speech_callback = voice_processor.resume_processing
 
 threads = [
     generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
@@ -136,7 +133,7 @@ threads = [
     generate_ngrok_worker(port=config.KIK_BOT_PORT, kik=kik),
     generate_alarm_worker(response=alarm_response),
     speech_output.get_worker(),
-    voice_processing_thread
+    voice_processor.processing_worker()
 ]
 
 for thread in threads:
@@ -145,7 +142,7 @@ for thread in threads:
 logging.debug('All threads started')
 
 # Starting voice input process
-voice_input_process.start()
+voice_processor.input_worker().start()
 
 pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')

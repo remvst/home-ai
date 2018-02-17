@@ -1,11 +1,12 @@
 from collections import deque
-from datetime import date, datetime, time
+from datetime import date, datetime
 
 
 class AlarmClockSetting(object):
 
     def __init__(self, weekday, time):
         super(AlarmClockSetting, self).__init__()
+
         self.weekday = weekday
         self.time = time
 

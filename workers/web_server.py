@@ -1,10 +1,8 @@
 import json
 import logging
-import os
 from threading import Thread
 
 from flask import request
-from kik import Configuration
 from kik.messages import TextMessage, messages_from_json
 from werkzeug.serving import run_simple
 

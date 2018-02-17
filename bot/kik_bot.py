@@ -1,21 +1,21 @@
-from kik import KikApi, Configuration
-from kik.messages import LinkMessage, PictureMessage, SuggestedResponseKeyboard, TextMessage, TextResponse, messages_from_json
+from kik.messages import LinkMessage, PictureMessage, TextMessage
 
 import config
 from utils.content import TextContent, URLContent, PictureURLContent
 from utils.output import Output
-from utils.response import ResponseSet
+
 
 class KikBotOutput(Output):
 
-    def __init__(self, kik, default_keyboard=None, *args, **kwargs):
-        super(KikBotOutput, self).__init__(*args, **kwargs)
+    def __init__(self, kik, default_keyboard=None):
+        super(KikBotOutput, self).__init__()
 
         self.kik = kik
 
         self.default_keyboard = default_keyboard
 
-    def content_to_message(self, content):
+    @staticmethod
+    def content_to_message(content):
         if isinstance(content, TextContent):
             return TextMessage(body=content.body, to=config.KIK_BOT_RECIPIENT_USERNAME)
 
