@@ -22,7 +22,7 @@ class SpeechOutput(Output):
         self.start_speech_callback = None
         self.end_speech_callback = None
 
-    def output(self, contents):
+    def write(self, contents):
         string = '.'.join([c.body for c in contents if isinstance(c, TextContent)])
 
         logging.debug(u'Adding to queue: {}'.format(string))

@@ -13,7 +13,7 @@ class TakePictureScript(Script):
         super(TakePictureScript, self).__init__(*args, **kwargs)
         self.static_folder = static_folder
 
-    def run(self, input, output):
+    def run(self, input_content):
         now = datetime.utcnow()
         pic_id = now.isoformat()
 
@@ -22,9 +22,7 @@ class TakePictureScript(Script):
 
         url = '{}/{}'.format(get_ngrok_url(), self._path_to_static_file(relative_path))
 
-        output.output([
-            PictureURLContent(picture_url=url)
-        ])
+        self.output([PictureURLContent(picture_url=url)])
 
     def _path_to_static_file(self, relative_path):
         path_from_static = os.path.relpath(relative_path, self.static_folder)

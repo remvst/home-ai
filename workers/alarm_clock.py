@@ -21,8 +21,6 @@ def get_worker(response):
 
     def worker():
         while True:
-            logging.debug('Alarm clock')
-
             if not alarm_clock.check():
                 sleep(5)
                 continue

@@ -1,34 +1,54 @@
+import copy
+
 from utils.content import TextContent
 
 
 class Script(object):
 
-    def run(self, input, output):
+    def __init__(self, output=None):
+        super(Script, self).__init__()
+        self.output_stream = output
+
+    def run(self, input_content):
         raise Exception('Must implement run() method')
 
+    def output(self, content):
+        if self.output_stream is None:
+            return
 
-class StaticTextScript(object):
+        self.output_stream.write(content)
 
-    def __init__(self, body, *args, **kwargs):
-        super(StaticTextScript, self).__init__(*args, **kwargs)
+    def outputting_to(self, output_stream):
+        copied_script = copy.copy(self)
+        copied_script.output_stream = output_stream
+        return copied_script
+
+
+class StaticTextScript(Script):
+
+    def __init__(self, body):
+        super(StaticTextScript, self).__init__()
         self.body = body
 
-    def run(self, input, output):
-        output.output([TextContent(body=self.body)])
+    def run(self, input_content):
+        self.output([TextContent(body=self.body)])
 
 
 class CompositeScript(Script):
 
-    def __init__(self, scripts, *args, **kwargs):
-        super(CompositeScript, self).__init__(*args, **kwargs)
+    def __init__(self, scripts):
+        super(CompositeScript, self).__init__()
         self.scripts = scripts
 
-    def run(self, input, output):
+    def run(self, input_content):
         for script in self.scripts:
-            script.run(input, output)
+            script.run(input_content)
+
+    def outputting_to(self, output_stream):
+        return CompositeScript(scripts=[script.outputting_to(output_stream) for script in self.scripts])
 
 
 class EchoScript(Script):
 
-    def run(self, input, output):
-        output.output([input])
+    def run(self, input_content):
+        self.output([input_content])

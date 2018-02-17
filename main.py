@@ -59,35 +59,30 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Check running',
         command=TextCommand(keywords=['check']),
-        script=running_script,
-        output=bot_and_speech_output
+        script=running_script.outputting_to(bot_and_speech_output)
     ),
     Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
-        script=good_morning_script,
-        output=speech_output
+        script=good_morning_script.outputting_to(speech_output)
     ),
     Response(
         label='Picture',
         command=TextCommand(keywords=['picture']),
-        script=take_picture_script,
-        output=bot_output
+        script=take_picture_script.outputting_to(bot_output)
     ),
     Response(
         label='Tunnel URL',
         command=TextCommand(keywords=['tunnel']),
-        script=get_tunnel_url_script,
-        output=bot_output
+        script=get_tunnel_url_script.outputting_to(bot_output)
     ),
     Response(
         label='Default',
         command=AnyCommand(),
         script=CompositeScript(scripts=[
-            StaticTextScript(body='Unrecognized command'),
-            EchoScript()
-        ]),
-        output=bot_output
+            StaticTextScript(body='Unrecognized command, playing on speaker').outputting_to(bot_output),
+            EchoScript().outputting_to(speech_output)
+        ])
     )
 ])
 
@@ -95,28 +90,19 @@ voice_response = ResponseSet(responses=[
     Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
-        script=good_morning_script,
-        output=speech_output
+        script=good_morning_script.outputting_to(speech_output)
     ),
     Response(
         label='Picture',
         command=TextCommand(keywords=['picture']),
-        script=take_picture_script,
-        output=bot_output
-    ),
-    Response(
-        label='Impress',
-        command=TextCommand(keywords=['impress']),
-        script=StaticTextScript(body='Hey Samantha are you Google? Cause you\'re everything I\'m looking for'),
-        output=speech_output
+        script=take_picture_script.outputting_to(bot_output)
     )
 ])
 
 alarm_response = Response(
     label='Alarm',
     command=AnyCommand(),
-    script=GoodMorningScript(),
-    output=speech_output
+    script=GoodMorningScript().outputting_to(speech_output)
 )
 
 # Workers
@@ -144,7 +130,7 @@ logging.debug('All threads started')
 # Starting voice input process
 voice_processor.input_worker().start()
 
-pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
+# pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
 
 for thread in threads:

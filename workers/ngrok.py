@@ -24,7 +24,7 @@ def get_worker(port, kik):
                 break
             except KeyboardInterrupt:
                 raise
-            except KeyError:
+            except IndexError:
                 continue
 
         logging.debug('ngrok available at {}'.format(ngrok_url))

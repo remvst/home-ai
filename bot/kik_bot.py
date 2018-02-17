@@ -27,7 +27,7 @@ class KikBotOutput(Output):
 
         raise Exception('Unrecognized content type')
 
-    def output(self, contents):
+    def write(self, contents):
         messages = [self.content_to_message(content) for content in contents]
 
         for message in messages:

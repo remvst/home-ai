@@ -5,5 +5,5 @@ from utils.script import Script
 
 class GetTunnelURLScript(Script):
 
-    def run(self, input, output):
-        output.output([TextContent(get_ngrok_url())])
+    def run(self, input_content):
+        self.output([TextContent(get_ngrok_url())])

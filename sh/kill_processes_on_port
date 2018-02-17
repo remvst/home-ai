@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for port ; do
+    for id in $(lsof -i :$port | tr -s ' ' | cut -d' ' -f 2) ; do
+        if [[ $id =~ ^[0-9]+$ ]] ; then
+            kill -9 $id
+        fi
+    done
+done
+
+exit 0

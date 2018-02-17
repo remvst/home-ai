@@ -3,13 +3,13 @@ import logging
 
 class Output(object):
 
-    def output(self, contents):
+    def write(self, contents):
         pass
 
 
 class LogOutput(Output):
 
-    def output(self, contents):
+    def write(self, contents):
         for content in contents:
             logging.debug(str(content))
 
@@ -20,6 +20,6 @@ class MultiOutput(Output):
         super(MultiOutput, self).__init__()
         self.outputs = outputs
 
-    def output(self, contents):
+    def write(self, contents):
         for output in self.outputs:
-            output.output(contents)
+            output.write(contents)
