@@ -191,7 +191,7 @@ logging.debug('All threads started')
 # Starting voice input process
 voice_processor.input_worker().start()
 
-# pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
+pair_speaker(mac_address=config.SPEAKER_MAC_ADDRESS, sink_name=config.SINK_NAME)
 play_mp3('assets/initialized-home-ai.mp3')
 
 for thread in threads:
