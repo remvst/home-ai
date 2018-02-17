@@ -9,7 +9,11 @@ from kik.messages import SuggestedResponseKeyboard, TextResponse
 import config
 from bot.kik_bot import KikBotOutput
 from scripts.get_tunnel_url import GetTunnelURLScript
-from scripts.good_morning import GoodMorningScript
+from scripts.weather import WeatherScript
+from scripts.headlines import HeadlinesScript
+from scripts.calendar import CalendarScript
+from scripts.quote_of_the_day import QuoteOfTheDayScript
+from scripts.current_time import CurrentTimeScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
 from utils.output import MultiOutput
@@ -36,7 +40,11 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
         TextResponse('Check Running'),
         TextResponse('Tunnel URL'),
         TextResponse('Alarm Clock'),
-        TextResponse('Picture')
+        TextResponse('Picture'),
+        TextResponse('Quote'),
+        TextResponse('Headlines'),
+        TextResponse('Weather'),
+        TextResponse('Calendar')
     ]
 ))
 
@@ -49,7 +57,20 @@ web_app = Flask(__name__, static_folder=static_folder)
 bot_and_speech_output = MultiOutput(outputs=[speech_output, bot_output])
 
 # Scripts
-good_morning_script = GoodMorningScript()
+calendar_script = CalendarScript()
+headlines_script = HeadlinesScript()
+weather_script = WeatherScript()
+quote_script = QuoteOfTheDayScript()
+current_time_script = CurrentTimeScript()
+good_morning_script = CompositeScript(scripts=[
+    StaticTextScript(body='Good morning Remi. Time to wake up'),
+    current_time_script,
+    calendar_script,
+    headlines_script,
+    weather_script,
+    quote_script,
+    StaticTextScript(body='Have an amazing day')
+])
 take_picture_script = TakePictureScript(static_folder=static_folder)
 get_tunnel_url_script = GetTunnelURLScript()
 running_script = StaticTextScript(body='I am running indeed')
@@ -70,6 +91,26 @@ bot_response = ResponseSet(responses=[
         label='Picture',
         command=TextCommand(keywords=['picture']),
         script=take_picture_script.outputting_to(bot_output)
+    ),
+    Response(
+        label='Quote',
+        command=TextCommand(keywords=['quote']),
+        script=quote_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Calendar',
+        command=TextCommand(keywords=['calendar', 'events']),
+        script=calendar_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Weather',
+        command=TextCommand(keywords=['weather']),
+        script=weather_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Headlines',
+        command=TextCommand(keywords=['headlines', 'news']),
+        script=headlines_script.outputting_to(bot_and_speech_output)
     ),
     Response(
         label='Tunnel URL',
@@ -96,13 +137,33 @@ voice_response = ResponseSet(responses=[
         label='Picture',
         command=TextCommand(keywords=['picture']),
         script=take_picture_script.outputting_to(bot_output)
-    )
+    ),
+    Response(
+        label='Quote',
+        command=TextCommand(keywords=['quote']),
+        script=quote_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Calendar',
+        command=TextCommand(keywords=['calendar', 'events']),
+        script=calendar_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Weather',
+        command=TextCommand(keywords=['weather']),
+        script=weather_script.outputting_to(bot_and_speech_output)
+    ),
+    Response(
+        label='Headlines',
+        command=TextCommand(keywords=['headlines', 'news']),
+        script=headlines_script.outputting_to(bot_and_speech_output)
+    ),
 ])
 
 alarm_response = Response(
     label='Alarm',
     command=AnyCommand(),
-    script=GoodMorningScript().outputting_to(speech_output)
+    script=good_morning_script.outputting_to(speech_output)
 )
 
 # Workers

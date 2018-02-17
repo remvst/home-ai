@@ -8,19 +8,9 @@ from utils.content import TextContent
 from utils.script import Script
 
 
-class GoodMorningScript(Script):
+class CurrentTimeScript(Script):
 
     def run(self, input_content):
-        google_calendar_summarizer = GoogleCalendarSummarizer(credentials=get_credentials(
-            client_secrets_file='oauth_secret2.json',
-            application_name='Home AI Google Calendar access'
-        ))
-
-        news_summarizer = NewsSummarizer(
-            api_key=config.NEWS_API_KEY,
-            sources=['bbc-news']
-        )
-
         time_announcer = TimeAnnouncer()
 
         quote_of_the_day = QuoteOfTheDay()
@@ -42,4 +32,4 @@ class GoodMorningScript(Script):
 
         string = u'.'.join(lines)
 
-        self.output([TextContent(string)])
+        self.output([TextContent(strintime_announcer.generate_string())])
