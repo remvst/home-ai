@@ -29,8 +29,8 @@ class VoiceProcessor(object):
     def input_worker(self):
         def worker(queue):
             speech = LiveSpeech(sampling_rate=16000,
-                                lm='assets/dictionary/9126.lm',
-                                dic='assets/dictionary/9126.dic',
+                                lm='assets/dictionary/3306.lm',
+                                dic='assets/dictionary/3306.dic',
                                 audio_device='0')
 
             for phrase in speech:
