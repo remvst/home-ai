@@ -46,7 +46,9 @@ class VoiceProcessor(object):
     def processing_worker(self):
         def worker():
             while True:
+                logging.debug('wait for queue...')
                 phrase = self.queue.get()
+                logging.debug('got queue element')
 
                 if self.paused:
                     continue
