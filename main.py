@@ -17,9 +17,9 @@ from scripts.quote_of_the_day import QuoteOfTheDayScript
 from scripts.current_time import CurrentTimeScript
 from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
-from utils.output import MultiOutput
+from utils.output import MultiOutput, ThreadedOutput
 from utils.response import Response, ResponseSet
-from utils.script import CompositeScript, EchoScript, StaticTextScript
+from utils.script import CompositeScript, EchoScript, StaticTextScript, ParallelScript
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
@@ -57,7 +57,10 @@ speech_output = SpeechOutput(speaker_mac_address=config.SPEAKER_MAC_ADDRESS,
 static_folder = '{}/{}'.format(os.path.dirname(os.path.abspath(__file__)), 'static')
 web_app = Flask(__name__, static_folder=static_folder)
 
-bot_and_speech_output = MultiOutput(outputs=[speech_output, bot_output])
+bot_and_speech_output = MultiOutput(outputs=[
+    ThreadedOutput(output=speech_output),
+    bot_output
+])
 
 # Scripts
 calendar_script = CalendarScript()
@@ -133,7 +136,7 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Default',
         command=AnyCommand(),
-        script=CompositeScript(scripts=[
+        script=ParallelScript(scripts=[
             StaticTextScript(body='Unrecognized command, playing on speaker').outputting_to(bot_output),
             EchoScript().outputting_to(speech_output)
         ])

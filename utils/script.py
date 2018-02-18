@@ -1,4 +1,5 @@
 import copy
+from threading import Thread
 
 from utils.content import TextContent
 
@@ -46,6 +47,33 @@ class CompositeScript(Script):
 
     def outputting_to(self, output_stream):
         return CompositeScript(scripts=[script.outputting_to(output_stream) for script in self.scripts])
+
+
+class ParallelScript(Script):
+
+    def __init__(self, scripts):
+        super(ParallelScript, self).__init__()
+        self.scripts = scripts
+
+    @staticmethod
+    def _thread(script, input_content):
+
+        def worker():
+            script.run(input_content)
+
+        return worker
+
+    def run(self, input_content):
+        threads = [self._thread(script, input_content) for script in self.scripts]
+
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+
+    def outputting_to(self, output_stream):
+        return ParallelScript(scripts=[script.outputting_to(output_stream) for script in self.scripts])
 
 
 class EchoScript(Script):
