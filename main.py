@@ -8,6 +8,7 @@ from kik.messages import SuggestedResponseKeyboard, TextResponse
 
 import config
 from bot.kik_bot import KikBotOutput
+from scripts.exit_process import ExitProcessScript
 from scripts.get_tunnel_url import GetTunnelURLScript
 from scripts.weather import WeatherScript
 from scripts.headlines import HeadlinesScript
@@ -44,7 +45,8 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
         TextResponse('Quote'),
         TextResponse('Headlines'),
         TextResponse('Weather'),
-        TextResponse('Calendar')
+        TextResponse('Calendar'),
+        TextResponse('Kill')
     ]
 ))
 
@@ -116,6 +118,11 @@ bot_response = ResponseSet(responses=[
         label='Tunnel URL',
         command=TextCommand(keywords=['tunnel']),
         script=get_tunnel_url_script.outputting_to(bot_output)
+    ),
+    Response(
+        label='Kill',
+        command=TextCommand(keywords=['kill']),
+        script=ExitProcessScript().outputting_to(bot_output)
     ),
     Response(
         label='Default',
