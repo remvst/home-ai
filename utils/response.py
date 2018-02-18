@@ -10,8 +10,11 @@ class Response(object):
     def respond(self, input_content):
         self.script.run(input_content)
 
+    def should_handle(self, input_content):
+        return self.command.matches(input_content)
+
     def maybe_handle(self, input_content):
-        if not self.command.matches(input_content):
+        if not self.should_handle(input_content):
             return False
 
         self.respond(input_content)

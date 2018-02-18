@@ -6,7 +6,7 @@ from pocketsphinx import LiveSpeech
 
 from utils.content import TextContent
 from utils.infinite_worker import infinite_worker
-from utils.sound import play_mp3
+from utils.sound import play_mp3_threaded
 
 
 class VoiceProcessor(object):
@@ -70,9 +70,15 @@ class VoiceProcessor(object):
             if not phrase.startswith(self.prefix):
                 return
 
-            play_mp3('assets/speech-detected.mp3')
+            input_content = TextContent(body=phrase)
 
-            if not self.response.maybe_handle(TextContent(body=phrase)):
-                play_mp3('assets/error.mp3')
+            # Play a sound before we even handle the input
+            if self.response.should_handle(input_content):
+                play_mp3_threaded('assets/speech-detected.mp3')
+            else:
+                play_mp3_threaded('assets/error.mp3')
+
+            # Actually handle the input
+            self.response.maybe_handle(input_content)
 
         return Thread(target=worker, name='Phrase processing')
