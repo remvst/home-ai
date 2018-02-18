@@ -46,7 +46,8 @@ bot_output = KikBotOutput(kik=kik, default_keyboard=SuggestedResponseKeyboard(
         TextResponse('Headlines'),
         TextResponse('Weather'),
         TextResponse('Calendar'),
-        TextResponse('Kill')
+        TextResponse('Kill'),
+        TextResponse('Restart')
     ]
 ))
 
@@ -122,7 +123,12 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Kill',
         command=TextCommand(keywords=['kill']),
-        script=ExitProcessScript().outputting_to(bot_output)
+        script=ExitProcessScript(exit_code=0).outputting_to(bot_output)
+    ),
+    Response(
+        label='Restart',
+        command=TextCommand(keywords=['restart', 'reboot']),
+        script=ExitProcessScript(exit_code=1).outputting_to(bot_output)
     ),
     Response(
         label='Default',
