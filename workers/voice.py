@@ -1,7 +1,6 @@
 import logging
 from multiprocessing import Process, Queue
 from threading import Thread
-from time import sleep
 
 from pocketsphinx import LiveSpeech
 
@@ -22,9 +21,11 @@ class VoiceProcessor(object):
         self.paused = False
 
     def pause_processing(self):
+        logging.debug('pause processing')
         self.paused = True
 
     def resume_processing(self):
+        logging.debug('resume processing')
         self.paused = False
 
     def input_worker(self):
