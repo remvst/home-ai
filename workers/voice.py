@@ -56,8 +56,6 @@ class VoiceProcessor(object):
                 # Handling this phrase in a separate thread so we can keep keep processing the next one
                 self._process_phrase_worker(phrase.lower()).start()
 
-                self.queue.task_done()
-
         return Thread(target=infinite_worker(worker), name='Voice processing')
 
     def _process_phrase_worker(self, phrase):
