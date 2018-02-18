@@ -12,7 +12,7 @@ def play_mp3(file_path, delay=0):
     subprocess.check_output(['mpg123', '--quiet', '--delay', str(delay), file_path])
 
 
-def play_mp3_threaded(file_path, delay):
+def play_mp3_threaded(file_path, delay=0):
 
     def worker():
         play_mp3(file_path, delay)
