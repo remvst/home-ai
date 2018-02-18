@@ -1,4 +1,4 @@
-import sys
+import os
 
 from utils.content import TextContent
 from utils.script import Script
@@ -12,4 +12,5 @@ class ExitProcessScript(Script):
 
     def run(self, input_content):
         self.output([TextContent(body='Killing process')])
-        sys.exit(self.exit_code)
+
+        os.kill(os.getpid(), 9)
