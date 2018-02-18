@@ -27,9 +27,12 @@ class ResponseSet(object):
         super(ResponseSet, self).__init__()
         self.responses = responses
 
-    def maybe_handle(self, content):
+    def should_handle(self, input_content):
+        return any(response.should_handle(input_content) for response in self.responses)
+
+    def maybe_handle(self, input_content):
         for response in self.responses:
-            if response.maybe_handle(content):
+            if response.maybe_handle(input_content):
                 return True
 
         return False
