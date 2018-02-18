@@ -36,7 +36,9 @@ class VoiceProcessor(object):
             for phrase in speech:
                 queue.put(phrase.hypothesis())
 
-        return Process(target=infinite_worker(worker), name='Voice input', args=[self.queue])
+        process = Process(target=infinite_worker(worker), name='Voice input', args=[self.queue])
+        process.daemon = True  # make sure this process dies at the same time as the current one
+        return process
 
     def processing_worker(self):
         def worker():
