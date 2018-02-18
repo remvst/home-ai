@@ -61,7 +61,7 @@ class ParallelScript(Script):
         def worker():
             script.run(input_content)
 
-        return worker
+        return Thread(target=worker)
 
     def run(self, input_content):
         threads = [self._thread(script, input_content) for script in self.scripts]
