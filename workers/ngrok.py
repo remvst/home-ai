@@ -12,6 +12,7 @@ def get_worker(port, kik):
 
     def worker():
         thread = Thread(target=notify_ngrok_worker)
+        thread.daemon = True
         thread.start()
 
         run_ngrok(port=port)
