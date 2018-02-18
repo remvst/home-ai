@@ -1,6 +1,7 @@
 import logging
 from multiprocessing import Process, Queue
 from threading import Thread
+from time import sleep
 
 from pocketsphinx import LiveSpeech
 
@@ -34,6 +35,7 @@ class VoiceProcessor(object):
                                 audio_device='0')
 
             for phrase in speech:
+                logging.debug('Voice input: {}, probability: {}'.format(phrase.hypothesis(), phrase.probability()))
                 queue.put(phrase.hypothesis())
 
         process = Process(target=infinite_worker(worker), name='Voice input', args=[self.queue])
@@ -53,6 +55,8 @@ class VoiceProcessor(object):
 
                 # Handling this phrase in a separate thread so we can keep keep processing the next one
                 self._process_phrase_worker(phrase.lower()).start()
+
+                self.queue.task_done()
 
         return Thread(target=infinite_worker(worker), name='Voice processing')
 

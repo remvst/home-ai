@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from time import sleep
 
 from flask import Flask
 from kik import KikApi
@@ -185,9 +186,15 @@ alarm_response = Response(
 # Workers
 logging.debug('Starting threads')
 
+
+def resume_with_delay():
+    sleep(1)  # wait a second before resuming processing to avoid processing delayed speeches
+    voice_processor.resume_processing()
+
+
 voice_processor = VoiceProcessor(prefix='please', response=voice_response)
 speech_output.start_speech_callback = voice_processor.pause_processing
-speech_output.end_speech_callback = voice_processor.resume_processing
+speech_output.end_speech_callback = resume_with_delay
 
 threads = [
     generate_web_worker(web_app=web_app, port=config.KIK_BOT_PORT, kik=kik,
