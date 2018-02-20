@@ -175,7 +175,10 @@ voice_response = ResponseSet(responses=[
     Response(
         label='Headlines',
         command=TextCommand(keywords=['headlines', 'news']),
-        script=headlines_script.outputting_to(bot_and_speech_output)
+        script=ParallelScript(scripts=[
+            headlines_script.outputting_to(speech_output),
+            headlines_links_script.outputting_to(bot_output)
+        ])
     ),
 ], confused_script=ParallelScript(scripts=[
     EchoTextScript(echo_format='I am confused (input: {})').outputting_to(bot_output),
