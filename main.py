@@ -9,14 +9,14 @@ from kik.messages import SuggestedResponseKeyboard, TextResponse
 
 import config
 from bot.kik_bot import KikBotOutput
+from scripts.calendar import CalendarScript
+from scripts.current_time import CurrentTimeScript
 from scripts.exit_process import ExitProcessScript
 from scripts.get_tunnel_url import GetTunnelURLScript
-from scripts.weather import WeatherScript
-from scripts.headlines import HeadlinesScript
-from scripts.calendar import CalendarScript
+from scripts.headlines import HeadlinesScript, HeadlinesLinksScript
 from scripts.quote_of_the_day import QuoteOfTheDayScript
-from scripts.current_time import CurrentTimeScript
 from scripts.take_picture import TakePictureScript
+from scripts.weather import WeatherScript
 from utils.command import AnyCommand, TextCommand
 from utils.output import MultiOutput, ThreadedOutput
 from utils.response import Response, ResponseSet
@@ -66,6 +66,7 @@ bot_and_speech_output = MultiOutput(outputs=[
 # Scripts
 calendar_script = CalendarScript()
 headlines_script = HeadlinesScript()
+headlines_links_script = HeadlinesLinksScript()
 weather_script = WeatherScript()
 quote_script = QuoteOfTheDayScript()
 current_time_script = CurrentTimeScript()
@@ -92,7 +93,10 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Alarm',
         command=TextCommand(keywords=['alarm', 'clock', 'morning']),
-        script=good_morning_script.outputting_to(speech_output)
+        script=ParallelScript(scripts=[
+            good_morning_script.outputting_to(speech_output),
+            headlines_links_script.outputting_to(bot_output)
+        ])
     ),
     Response(
         label='Picture',
@@ -117,7 +121,10 @@ bot_response = ResponseSet(responses=[
     Response(
         label='Headlines',
         command=TextCommand(keywords=['headlines', 'news']),
-        script=headlines_script.outputting_to(bot_and_speech_output)
+        script=ParallelScript(scripts=[
+            headlines_script.outputting_to(speech_output),
+            headlines_links_script.outputting_to(bot_output)
+        ])
     ),
     Response(
         label='Tunnel URL',
@@ -178,7 +185,10 @@ voice_response = ResponseSet(responses=[
 alarm_response = Response(
     label='Alarm',
     command=AnyCommand(),
-    script=good_morning_script.outputting_to(speech_output)
+    script=ParallelScript(scripts=[
+        good_morning_script.outputting_to(speech_output),
+        headlines_links_script.outputting_to(bot_output)
+    ])
 )
 
 # Workers

@@ -30,17 +30,17 @@ class NewsSummarizer(TextPlugin):
         return json.loads(content)['articles'][:5]
 
     def generate_string(self):
-        lines = ['Here are the headlines for today']
+        lines = ['Here are the headlines for today:']
         for source in self.sources:
             try:
-                lines.append('In {}'.format(source))
+                lines.append('\nIn {}:'.format(source))
                 articles = self.fetch_articles(source)
-                lines.extend([article['title'] for article in articles])
+                lines.extend(['- {}'.format(article['title']) for article in articles])
             except Exception as ex:
                 logging.exception(ex)
                 return 'Error getting {} news headlines'.format(source)
 
-        return u'. '.join(lines)
+        return u'\n'.join(lines)
 
     def generate_urls(self):
         urls = []
