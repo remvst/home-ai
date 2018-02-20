@@ -20,7 +20,7 @@ from scripts.take_picture import TakePictureScript
 from utils.command import AnyCommand, TextCommand
 from utils.output import MultiOutput, ThreadedOutput
 from utils.response import Response, ResponseSet
-from utils.script import CompositeScript, EchoScript, StaticTextScript, ParallelScript
+from utils.script import CompositeScript, EchoScript, EchoTextScript, StaticTextScript, ParallelScript
 from utils.sound import play_mp3, pair_speaker
 from workers.alarm_clock import get_worker as generate_alarm_worker
 from workers.ngrok import get_worker as generate_ngrok_worker
@@ -142,7 +142,7 @@ bot_response = ResponseSet(responses=[
             EchoScript().outputting_to(speech_output)
         ])
     )
-])
+], confused_script=StaticTextScript(body='I am confused').outputting_to(bot_output))
 
 voice_response = ResponseSet(responses=[
     Response(
@@ -175,7 +175,10 @@ voice_response = ResponseSet(responses=[
         command=TextCommand(keywords=['headlines', 'news']),
         script=headlines_script.outputting_to(bot_and_speech_output)
     ),
-])
+], confused_script=ParallelScript(scripts=[
+    StaticTextScript(body='I am confused (input: {})').outputting_to(bot_output),
+    StaticTextScript(body='I am confused').outputting_to(speech_output)
+]))
 
 alarm_response = Response(
     label='Alarm',

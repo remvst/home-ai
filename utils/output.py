@@ -8,6 +8,16 @@ class Output(object):
         pass
 
 
+class BufferOutput(Output):
+
+    def __init__(self):
+        super(BufferOutput, self).__init__()
+        self.buffer = []
+
+    def write(self, contents):
+        self.buffer.extend(contents)
+
+
 class LogOutput(Output):
 
     def write(self, contents):

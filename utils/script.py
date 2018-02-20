@@ -2,6 +2,7 @@ import copy
 from threading import Thread
 
 from utils.content import TextContent
+from utils.output import BufferOutput
 
 
 class Script(object):
@@ -41,9 +42,38 @@ class CompositeScript(Script):
         super(CompositeScript, self).__init__()
         self.scripts = scripts
 
+    @staticmethod
+    def _thread(script, input_content, output):
+
+        def worker():
+            script.outputting_to(output).run(input_content)
+
+        return Thread(target=worker)
+
     def run(self, input_content):
-        for script in self.scripts:
-            script.run(input_content)
+        # Create one buffer for each thread to output to
+        buffers = [BufferOutput() for _ in xrange(self.scripts)]
+
+        # Create each thread
+        threads = []
+        for i in xrange(self.scripts):
+            threads.append(self._thread(self.scripts[i], input_content, buffers[i]))
+
+        # Run all the threads in parallel
+        for thread in threads:
+            thread.start()
+
+        # Wait for them to finish
+        for thread in threads:
+            thread.join()
+
+        # Join all the buffers
+        overall_buffer = []
+        for buffer_output in buffers:
+            overall_buffer.extend(buffer_output.buffer)
+
+        # Send the entire batch to the output
+        self.output(overall_buffer)
 
     def outputting_to(self, output_stream):
         return CompositeScript(scripts=[script.outputting_to(output_stream) for script in self.scripts])
@@ -80,3 +110,16 @@ class EchoScript(Script):
 
     def run(self, input_content):
         self.output([input_content])
+
+
+class EchoTextScript(Script):
+
+    def __init__(self, echo_format='{}'):
+        super(EchoTextScript, self).__init__()
+        self.echo_format = echo_format
+
+    def run(self, input_content):
+        if not isinstance(input_content, TextContent):
+            return
+
+        self.output([TextContent(body=self.echo_format.format(input_content.body))])
