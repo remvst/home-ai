@@ -30,7 +30,7 @@ class ResponseSet(object):
         return [response for response in self.responses if response.should_handle(input_content)]
 
     def should_handle(self, input_content):
-        return len(self.handling_responses(input_content)) > 0 or self.default_script is not None
+        return len(self._handling_responses(input_content)) > 0 or self.default_script is not None
 
     def maybe_handle(self, input_content):
         responses = self._handling_responses(input_content)
