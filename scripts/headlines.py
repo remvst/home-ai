@@ -21,4 +21,4 @@ class HeadlinesLinksScript(Script):
             api_key=config.NEWS_API_KEY,
             sources=['bbc-news']
         )
-        self.output([URLContent(url=url for url in news_summarizer.generate_urls())])
+        self.output([URLContent(url=url) for url in news_summarizer.generate_urls()])
