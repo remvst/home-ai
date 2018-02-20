@@ -52,11 +52,11 @@ class CompositeScript(Script):
 
     def run(self, input_content):
         # Create one buffer for each thread to output to
-        buffers = [BufferOutput() for _ in xrange(self.scripts)]
+        buffers = [BufferOutput() for _ in xrange(len(self.scripts))]
 
         # Create each thread
         threads = []
-        for i in xrange(self.scripts):
+        for i in xrange(len(self.scripts)):
             threads.append(self._thread(self.scripts[i], input_content, buffers[i]))
 
         # Run all the threads in parallel
