@@ -68,12 +68,9 @@ class CompositeScript(Script):
             thread.join()
 
         # Join all the buffers
-        overall_buffer = []
-        for buffer_output in buffers:
-            overall_buffer.extend(buffer_output.buffer)
-
-        # Send the entire batch to the output
-        self.output(overall_buffer)
+        for i in xrange(len(self.scripts)):
+            buffered = buffers[i].buffer
+            self.scripts[i].output(buffered)
 
     def outputting_to(self, output_stream):
         return CompositeScript(scripts=[script.outputting_to(output_stream) for script in self.scripts])
