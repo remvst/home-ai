@@ -171,7 +171,7 @@ voice_response = ResponseSet(responses=[
         script=headlines_script.outputting_to(bot_and_speech_output)
     ),
 ], confused_script=ParallelScript(scripts=[
-    StaticTextScript(body='I am confused (input: {})').outputting_to(bot_output),
+    EchoTextScript(body='I am confused (input: {})').outputting_to(bot_output),
     StaticTextScript(body='I am confused').outputting_to(speech_output)
 ]))
 
