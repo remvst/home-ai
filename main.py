@@ -133,16 +133,11 @@ bot_response = ResponseSet(responses=[
         label='Restart',
         command=TextCommand(keywords=['restart', 'reboot']),
         script=ExitProcessScript(exit_code=1).outputting_to(bot_output)
-    ),
-    Response(
-        label='Default',
-        command=AnyCommand(),
-        script=ParallelScript(scripts=[
-            StaticTextScript(body='Unrecognized command, playing on speaker').outputting_to(bot_output),
-            EchoScript().outputting_to(speech_output)
-        ])
     )
-], confused_script=StaticTextScript(body='I am confused').outputting_to(bot_output))
+], default_script=ParallelScript(scripts=[
+    StaticTextScript(body='Unrecognized command, playing on speaker').outputting_to(bot_output),
+    EchoScript().outputting_to(speech_output)
+]), confused_script=StaticTextScript(body='I am confused').outputting_to(bot_output))
 
 voice_response = ResponseSet(responses=[
     Response(
